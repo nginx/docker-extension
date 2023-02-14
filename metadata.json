@@ -1,0 +1,10 @@
+{
+  "icon": "logo.svg",
+  "ui": {
+    "dashboard-tab": {
+      "title": "NGINX",
+      "src": "index.html",
+      "root": "ui"
+    }
+  }
+}
