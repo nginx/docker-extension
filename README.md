@@ -19,8 +19,9 @@ docker remove nginx/nginx-dd-extension
 ```
 
 ### Start Docker Extension Development Server
-1.  start the UI node server.
+1. start the UI node server in the `ui` directory. Make sure you install the dev dependencies at the first.
 ```shell
+npm install
 npm run dev
 ```
 
