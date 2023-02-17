@@ -73,6 +73,7 @@ interface NetworkSettings {
 
 interface Container {
     Id: string,
+    Names: Array<string>,
     Ports: Array<Port>,
     State: string,
     Status: string,
@@ -95,6 +96,7 @@ export class InstancesService {
         const promises = containers.map(container => {
             return {
                 container: container.Id,
+                name: container.Names[0],
                 ports: container.Ports,
                 status: container.Status,
                 network: container.NetworkSettings.Networks,
@@ -113,5 +115,36 @@ export class InstancesService {
             }).catch((error) => '')
         }))
         return promises;
+    }
+
+    async getConfiguration(containerId: string): Promise<any> {
+        const data = await this.ddClient.docker.cli.exec(
+            "exec",
+            [containerId,
+                "/bin/bash", "-c", `'nginx -T |grep "# configuration file" | tr -d "\\n"'`]);
+        // parse Configuration File and return array.
+        return data;
+    }
+
+    async getConfigurationFileContent(file: string, containerId: string): Promise<any> {
+        const fileContent = await this.ddClient.docker.cli.exec(
+            "exec",
+            [containerId,
+                "/bin/sh", "-c", `'cat "${file}"'`]);
+        return fileContent;
+    }
+
+    // Maybe this can be the default function to send docker exec commands?
+    async sendConfigurationToFile(file: string, containerId: string, configurationB64: string): Promise<any> {
+        const ret = await this.ddClient.docker.cli.exec(
+            "exec",
+            [containerId,
+                "/bin/sh", "-c", `'echo ${configurationB64} |base64 -d > ${file}'`]);
+        return ret
+    }
+
+    parseConfigurationFiles(configuration: string): Array<string> {
+        let filesToParse: Array<string> = []
+        return filesToParse
     }
 }
