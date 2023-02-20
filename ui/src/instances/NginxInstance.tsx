@@ -2,6 +2,9 @@ import React, {MouseEventHandler, useEffect, useState} from 'react';
 import {InstancesService} from "./InstancesService";
 
 export function NginxInstance() {
+    //Refactoring - Make the state more inclusive
+    // - (merge ContainerId, ConfigurationFile and ConfigurationFileContent) in a single state property.
+    //
     const [instances, setResponse] = useState<any>([]);
     const [containerId, setContainerId] = useState<any>(undefined);
     const [loading, setLoading] = useState<any>(true);
@@ -35,9 +38,9 @@ export function NginxInstance() {
         instancePromise().catch(console.error)
     }, []);
 
-    const showConfiguraiton: MouseEventHandler<HTMLLIElement> | any = (containerId: string) => (event: MouseEventHandler<HTMLLIElement>) => {
+    const showConfigurationFiles: MouseEventHandler<HTMLLIElement> | any = (containerId: string) => (event: MouseEventHandler<HTMLLIElement>) => {
         setContainerId(containerId);
-        instanceService.getConfiguration(containerId).then((data: any) => {
+        instanceService.getConfigurations(containerId).then((data: any) => {
             //Config-Files into array!
             //@todo Refactoring: Make this more type save and check what
             // Typescript can do with undefined and null values
@@ -64,7 +67,7 @@ export function NginxInstance() {
     }
 
     const saveConfigurationToFile: any = (file: string, containerId: string) => (event: any) => {
-
+        //build dynamically from TextInput as B64.
         const content = "c2VydmVyCnsKICBsaXN0ZW4gODAyMjsKICByZXR1cm4gMjAwOwp9Cg=="
         instanceService.sendConfigurationToFile(file, containerId, content).then((data: any) => {
           //error handling here.
@@ -72,7 +75,7 @@ export function NginxInstance() {
     }
 
     // Refactor this! Make is smarter than a simple if in here!
-    // IDEA: Parse the content of the configuration and dispaly the help message form nginx.org :D DO IT!
+    // IDEA: Parse the content of the configuration and display the help message form nginx.org :D DO IT!
     return (
         <>
             Nginx Instances
@@ -80,7 +83,7 @@ export function NginxInstance() {
                 !configuration ? (
                     instances.map((inst: any, index: number) => (
                         <ul>
-                            <li key={index} onClick={showConfiguraiton(inst.id)}>
+                            <li key={index} onClick={showConfigurationFiles(inst.id)}>
                                 {inst.id}
                                 {inst.name}
                                 {inst.out}
