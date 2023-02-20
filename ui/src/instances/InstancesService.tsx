@@ -137,16 +137,16 @@ export class InstancesService {
         const data = await this.ddClient.docker.cli.exec(
             "exec",
             [containerId,
-                "/bin/bash", "-c", `'nginx -T |grep "# configuration file" | tr -d "\\n"'`]);
+                "/bin/sh", "-c", `"nginx -T"`]);
         // parse Configuration File and return array.
-        return data;
+        return data.stdout.match(new RegExp('# configuration file(.*)', 'g'))
     }
 
     async getConfigurationFileContent(file: string, containerId: string): Promise<any> {
         const fileContent = await this.ddClient.docker.cli.exec(
             "exec",
             [containerId,
-                "/bin/sh", "-c", `'cat "${file}"'`]);
+                "/bin/sh", "-c", `"cat ${file}"`]);
         return fileContent;
     }
 
@@ -156,8 +156,16 @@ export class InstancesService {
         const ret = await this.ddClient.docker.cli.exec(
             "exec",
             [containerId,
-                "/bin/sh", "-c", `'echo ${configurationB64} |base64 -d > ${file}'`]);
+                "/bin/sh", "-c", `"echo ${configurationB64} |base64 -d > ${file}"`]);
         // If code == 0, success, else error while applying new configuration.
+        return ret
+    }
+
+    async reloadNGINX(containerId: string): Promise<any> {
+        const ret = await this.ddClient.docker.cli.exec(
+            "exec",
+            [containerId,
+                "/bin/sh", "-c", `"nginx -s reload"`]);
         return ret
     }
 

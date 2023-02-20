@@ -1,5 +1,6 @@
 import React, {MouseEventHandler, useEffect, useState} from 'react';
 import {InstancesService} from "./InstancesService";
+import {TextareaAutosize} from "@mui/material";
 
 export function NginxInstance() {
     //Refactoring - Make the state more inclusive
@@ -9,7 +10,9 @@ export function NginxInstance() {
     const [containerId, setContainerId] = useState<any>(undefined);
     const [loading, setLoading] = useState<any>(true);
     const [configuration, setConfiguration] = useState<any>(undefined);
+
     const [configurationFileContent, setCFContent] = useState<any>("");
+
     const [fileName, setFileName] = useState<any>("");
     const instanceService: any = new InstancesService()
 
@@ -44,12 +47,11 @@ export function NginxInstance() {
             //Config-Files into array!
             //@todo Refactoring: Make this more type save and check what
             // Typescript can do with undefined and null values
-
-            let filesArray: Array<string> = data.stdout.split(":")
+            let filesArray: Array<string> = data
             filesArray = filesArray.filter(item => item != "").map((item: string) => {
                 let match = item.match( '(?:\\/etc\\/nginx\\/.*)');
                 if (match != undefined) {
-                    return match[0]
+                    return match[0].replace(`:`,``)
                 } else {
                     return ""
                 }
@@ -60,18 +62,27 @@ export function NginxInstance() {
     }
 
     const loadConfiguration: any = (fileName: string) => (event: any) => {
+        console.log(containerId)
         instanceService.getConfigurationFileContent(fileName, containerId).then((data: any) => {
+            console.log(data.stdout)
             setCFContent(data.stdout);
             setFileName(fileName);
-        })
+        }).catch( (error: any) => console.error())
     }
 
     const saveConfigurationToFile: any = (file: string, containerId: string) => (event: any) => {
         //build dynamically from TextInput as B64.
-        const content = "c2VydmVyCnsKICBsaXN0ZW4gODAyMjsKICByZXR1cm4gMjAwOwp9Cg=="
+        const content = btoa(configurationFileContent)
         instanceService.sendConfigurationToFile(file, containerId, content).then((data: any) => {
           //error handling here.
+          instanceService.reloadNGINX(containerId).then((data: any) => {
+              console.log(data)
+            })
         })
+    }
+
+    const onChangeConfigurationHandler: any = (event: any) => {
+        setCFContent(event.currentTarget.value)
     }
 
     // Refactor this! Make is smarter than a simple if in here!
@@ -107,7 +118,7 @@ export function NginxInstance() {
                         {!configurationFileContent ? ("Please choose a file") : (
                             <>
                                 <span onClick={saveConfigurationToFile(fileName, containerId)}>Save changes!</span>
-                                <pre>{configurationFileContent}</pre>
+                                <TextareaAutosize style={{width: '100%'}} value={configurationFileContent} onChange={onChangeConfigurationHandler}></TextareaAutosize>
                             </>
                         )}
                     </>
