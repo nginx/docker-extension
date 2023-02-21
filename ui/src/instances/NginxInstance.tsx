@@ -246,14 +246,12 @@ export function NginxInstance() {
     const [configFile, setCF] = useState("")
 
     const nginxConfigurationFileOnChangeHandler = (event: SelectChangeEvent) => {
-        console.log(event.target.value as string);
         setCF(event.target.value as string);
         setFileName(event.target.value as string);
         instanceService.getConfigurationFileContent(event.target.value as string, nginxInstance.id).then((data: any) => {
             setOldConfiguration(data.stdout)
             setCFContent(data.stdout);
         }).catch((error: any) => console.error())
-
     };
 
     const renderErrorMessageIfAny = () => {
@@ -269,7 +267,7 @@ export function NginxInstance() {
     // Refactor this! Make is smarter than a simple if in here!
     // IDEA: Parse the content of the configuration and display the help message form nginx.org :D DO IT!
     return (
-        <>
+        <Container sx={{ m: 1 }}>
             {!loading ? (
                 !configuration ? (
                     <Grid container> {
@@ -289,8 +287,8 @@ export function NginxInstance() {
                                     }
                                 </Box>
                             </Grid>
-                        ))}</Grid>) : (
-                    <>
+                    ))}</Grid>) : (
+                    <Container>
                         <Grid className={errorClasses.bannerBackground}>
                             <Typography variant={"h3"} paddingTop={2}>
                                 <Tooltip title="Back to Instances Overview">
@@ -363,7 +361,7 @@ export function NginxInstance() {
                                         highlight={
                                         configurationFileContent => highlight(configurationFileContent, languages.nginx, "nginx")
                                             .split("\n")
-                                            .map((line, i) => `<span class='editorLineNumber'>${i + 1}</span>${line}`)
+                                            .map((line, i) => `<span class='editorLineNumber' key=${i}>${i + 1}</span>${line}`)
                                             .join('\n')
                                         }
                                         padding={10}
@@ -389,13 +387,11 @@ export function NginxInstance() {
                                                                 <LineNo>{i + 1}</LineNo>
                                                                 <LineContent>
                                                                     {line.map((token, key) => (
-                                                                            <>
-                                                                                <span onClick={configSpanOnClickHandler}
-                                                                                      key={key} {...getTokenProps({
-                                                                                    token,
-                                                                                    key
-                                                                                })} />
-                                                                            </>
+                                                                            <span onClick={configSpanOnClickHandler}
+                                                                                    key={key} {...getTokenProps({
+                                                                                token,
+                                                                                key
+                                                                            })} />
                                                                         )
                                                                     )}
                                                                 </LineContent>
@@ -425,8 +421,9 @@ export function NginxInstance() {
                                 </Grid>
                             </Grid>
                         )}
-                    </>
-                )) : (<h1>Loading...</h1>)}
-        </>
+                    </Container>
+                )
+            ) : (<Typography variant='h3'>Loading...</Typography>)}
+        </Container>
     );
 }
