@@ -11,53 +11,6 @@ import {ExecResult, DockerDesktopClient} from "@docker/extension-api-client-type
 *
 * */
 
-/* CONTAINER type.
-{
-    "Id": "cdd8e9aaba7855a8dd365bddcc675ca37bd09a09eab4979c0d0f1f1e9511bc37",
-    "Names": [
-    "/keen_hermann"
-],
-    "Image": "nginx",
-    "ImageID": "sha256:3f8a00f137a0d2c8a2163a09901e28e2471999fde4efc2f9570b91f1c30acf94",
-    "Command": "/docker-entrypoint.sh nginx -g 'daemon off;'",
-    "Created": 1676375369,
-    "Ports": [
-    {
-        "PrivatePort": 80,
-        "Type": "tcp"
-    }
-],
-    "Labels": {
-    "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>"
-},
-    "State": "running",
-    "Status": "Up 6 hours",
-    "HostConfig": {
-    "NetworkMode": "default"
-},
-    "NetworkSettings": {
-    "Networks": {
-        "bridge": {
-            "IPAMConfig": null,
-                "Links": null,
-                "Aliases": null,
-                "NetworkID": "c641427fed6ccf5e375fec0fa4e679b7aebb0be54cb295ee3dae6e815b60a051",
-                "EndpointID": "ca4d1778a7ae9aafc681a6b823146786b5131df9da84c85b43e4d2cdab4d1a49",
-                "Gateway": "172.17.0.1",
-                "IPAddress": "172.17.0.7",
-                "IPPrefixLen": 16,
-                "IPv6Gateway": "",
-                "GlobalIPv6Address": "",
-                "GlobalIPv6PrefixLen": 0,
-                "MacAddress": "02:42:ac:11:00:07",
-                "DriverOpts": null
-        }
-    }
-},
-    "Mounts": []
-}
-*/
-
 interface Port {
     PrivatePort: number,
     Type: string
@@ -172,5 +125,13 @@ export class InstancesService {
     parseConfigurationFiles(configuration: string): Array<string> {
         let filesToParse: Array<string> = []
         return filesToParse
+    }
+
+    displaySuccessMessage(message: string): void {
+        this.ddClient.desktopUI.toast.success(message)
+    }
+
+    displayErrorMessage(message: string): void {
+        this.ddClient.desktopUI.toast.error(message)
     }
 }

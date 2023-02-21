@@ -15,7 +15,7 @@ export function App() {
 
   return (
     <>
-      <Typography variant="h3">NGINX Development Center</Typography>
+      <Typography variant="h2">NGINX Development Center</Typography>
       <NginxInstance />
     </>
   );
