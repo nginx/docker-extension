@@ -274,15 +274,15 @@ export function NginxInstance() {
                 !configuration ? (
                     <Grid container> {
                         instances.map((inst: any, key: number) => (
-                            <Grid item sm={6} lg={4}>
+                            <Grid item sm={6} lg={4} key={key}>
                                 <Box className={"ngx-instance"} borderRadius={1} boxShadow={5} margin={2} padding={2}
                                      border={"1px solid gray"}
                                      onClick={nginxInstanceOnClickHandler(inst.id, inst.name)}>
                                     <Typography variant="h3">{inst.name}</Typography>
                                     <Typography variant="subtitle1" paddingY={2}>{inst.status}</Typography>
                                     {inst.out}
-                                    {inst.ports.map((port: any) => (
-                                        <Box>
+                                    {inst.ports.map((port: any, key: number) => (
+                                        <Box key={key}>
                                             {containerNetwork(port)}
                                         </Box>
                                     ))
@@ -323,7 +323,7 @@ export function NginxInstance() {
                                     placeholder={"Select Configuration File"}
                                     onChange={nginxConfigurationFileOnChangeHandler}>
                                     {configuration.map((file: string, index: number) => (
-                                        <MenuItem value={file}>{file}</MenuItem>
+                                        <MenuItem value={file} key={index}>{file}</MenuItem>
                                     ))
                                     }
                                 </Select>
