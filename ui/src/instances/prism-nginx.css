@@ -4,6 +4,33 @@
  * @author Tim  Shedor
  */
 
+.nginx-config-editor {
+    counter-reset: line;
+}
+
+.nginx-config-editor textarea {
+    left: 50px!important;
+}
+
+.nginx-config-editor #codeArea {
+    outline: none;
+    padding-left: 60px !important;
+}
+
+.nginx-config-editor pre {
+    padding-left: 60px !important;
+}
+
+.nginx-config-editor .editorLineNumber {
+    position: absolute;
+    left: 0;
+    color: #cccccc;
+    text-align: right;
+    width: 40px;
+    font-weight: 100;
+}
+
+
 .nginx-config-editor > code[class*="language-"],
 .nginx-config-editor > pre[class*="language-"] {
     color: black;
@@ -170,6 +197,7 @@
 .token.bold {
     font-weight: bold;
 }
+
 .token.italic {
     font-style: italic;
 }
@@ -210,10 +238,33 @@
     padding-bottom: 0;
     padding-left: 0;
 }
+
 .nginx-config-editor > pre[data-line] code {
     position: relative;
     padding-left: 4em;
 }
+
 .nginx-config-editor > pre .line-highlight {
     margin-top: 0;
+}
+
+span.token.plain {
+    cursor: pointer;
+}
+
+span.token.plain:hover {
+    color: #d73038;
+    font-weight: bold;
+}
+
+
+.nginx-banner-error {
+    color: #fff;
+    background: repeating-linear-gradient(
+            45deg,
+            #D52536,
+            #D52536 10px,
+            #ae303c 10px,
+            #ae303c 20px
+    );
 }

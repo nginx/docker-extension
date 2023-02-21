@@ -3,10 +3,10 @@ import {InstancesService} from "./InstancesService";
 import {
     Box,
     Button,
-    Container,
+    Container, FormControl,
     Grid,
-    IconButton, Link,
-    Paper, Tab,
+    IconButton, InputLabel, Link, MenuItem,
+    Paper, Select, SelectChangeEvent, Tab,
     Tabs,
     TextareaAutosize,
     Tooltip,
@@ -16,27 +16,22 @@ import Highlight, {defaultProps} from "prism-react-renderer"
 import github from "prism-react-renderer/themes/github"
 import styled from "@emotion/styled";
 import "./Instance.css";
-import SendAndArchiveOutlinedIcon from '@mui/icons-material/SendAndArchiveOutlined';
+
 import {Unarchive, Archive, ArrowBackIosNewOutlined} from "@mui/icons-material";
-import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 
 import Editor from "react-simple-code-editor"
-import {languages, highlight} from "prismjs";
+import {languages, highlight, hooks} from "prismjs";
 import "./prism-nginx.css";
-import "prismjs/components/prism-nginx.js";
-import ReactDOM from "react-dom/client";
+import "../Prism/prism-nginx.js";
 import {ConfigurationReference} from "../configuration/ConfigurationReference";
+import PublishIcon from '@mui/icons-material/Publish';
 import {blue} from "@mui/material/colors";
+import DataObjectIcon from '@mui/icons-material/DataObject';
+import UndoIcon from '@mui/icons-material/Undo';
 
 interface NginxInstance {
     id: string,
     name: string
-}
-
-interface ErrorSate {
-    message: string,
-    undoVisible: boolean,
-    errorBannerVisible: boolean
 }
 
 export function NginxInstance() {
@@ -51,6 +46,12 @@ export function NginxInstance() {
     const [configurationFileContent, setCFContent] = useState<any>("");
 
     const [fileName, setFileName] = useState<any>("");
+    const [errorClasses, setErrorClasses] = useState<any>({
+        bannerBackground: "nginx-banner-neutral",
+        bannerErrorMessage: "",
+        backToDashboardDisabled: false,
+        undoChangesButtonDisabled: true,
+    });
 
     //new State Object - old stuff has to be refactored!
     const [nginxInstance, setNginxInstance] = useState<NginxInstance>({id: "", name: ""})
@@ -60,6 +61,11 @@ export function NginxInstance() {
 
     const instanceService: any = new InstancesService()
 
+    useEffect(() => {
+            hooks.add("before-highlight", (env) => {
+                console.log(hooks.all);
+            })
+    })
     useEffect(() => {
         const instancePromise = async () => {
             instanceService.getInstances().then((data: any) => {
@@ -124,18 +130,49 @@ export function NginxInstance() {
             //error handling here.
             instanceService.reloadNGINX(containerId).then((data: any) => {
                 instanceService.displaySuccessMessage("Configuration successfully updated!");
+                setErrorClasses({
+                    bannerBackground: "nginx-banner-neutral",
+                    backToDashboardDisabled: false,
+                    undoChangesButtonDisabled: true,
+                    bannerErrorMessage: ""
+                });
             }).catch((reason: any) => {
-                instanceService.displayErrorMessage("Error while updating configuration! Click Undo to revert.");
+                //hacky as hell! Needs reafactoring!
+                console.log((reason.stderr))
+                instanceService.displayErrorMessage(`Error while updating configuration: ${reason.stderr.split("\n")[1]}`);
+                setErrorClasses({
+                    bannerBackground: "nginx-banner-error",
+                    backToDashboardDisabled: true,
+                    undoChangesButtonDisabled: false,
+                    bannerErrorMessage: `Error while updating configuration: ${reason.stderr.split("\n")[1]}`
+                });
             })
         })
     }
 
-    const onChangeConfigurationHandler: any = (event: any) => {
-        setCFContent(event.currentTarget.value)
-    }
-
     const undoChanges: any = () => {
         setCFContent(oldConfiguration)
+        const content = btoa(oldConfiguration)
+        instanceService.sendConfigurationToFile(fileName, nginxInstance.id, content).then((data: any) => {
+            //error handling here.
+            instanceService.reloadNGINX(nginxInstance.id).then((data: any) => {
+                instanceService.displaySuccessMessage("Configuration rollback successful");
+                setErrorClasses({
+                    bannerBackground: "nginx-banner-neutral",
+                    backToDashboardDisabled: false,
+                    undoChangesButtonDisabled: true,
+                    bannerErrorMessage: ""
+                });
+            }).catch((reason: any) => {
+                instanceService.displayErrorMessage("Error while rolling back configuration! Contact Support!");
+                setErrorClasses({
+                    bannerBackground: "nginx-banner-error",
+                    backToDashboardDisabled: true,
+                    undoChangesButtonDisabled: false,
+                    bannerErrorMessage: `Error while updating configuration: ${reason.stderr.split("\n")[1]}`
+                });
+            })
+        })
     }
 
     const Pre = styled.pre`
@@ -160,7 +197,6 @@ export function NginxInstance() {
     const LineContent = styled.span`
       display: table-cell;
     `;
-
 
     const containerNetwork: any = (port: any) => {
         if (port.PrivatePort && port.PublicPort) {
@@ -200,21 +236,36 @@ export function NginxInstance() {
         }
     }
 
-    const registerListener: any = (event: any) => {
-        [...document.querySelectorAll('.token.directive')].forEach((item: any) => {
-            console.log(item);
-            item.addEventListener('click', (event: any) => {
-                console.log(event);
-            })
-        })
-    }
     const configSpanOnClickHandler: any = (event: any) => {
         console.log(event.currentTarget.innerText.trim());
         const ccr = new ConfigurationReference();
         const dirInfo = ccr.getDirectiveInformation(event.currentTarget.innerText.trim());
         setDirectiveInfo(dirInfo)
-        console.log(dirInfo);
     }
+
+    const [configFile, setCF] = useState("")
+
+    const nginxConfigurationFileOnChangeHandler = (event: SelectChangeEvent) => {
+        console.log(event.target.value as string);
+        setCF(event.target.value as string);
+        setFileName(event.target.value as string);
+        instanceService.getConfigurationFileContent(event.target.value as string, nginxInstance.id).then((data: any) => {
+            setOldConfiguration(data.stdout)
+            setCFContent(data.stdout);
+        }).catch((error: any) => console.error())
+
+    };
+
+    const renderErrorMessageIfAny = () => {
+        if (errorClasses.undoChangesButtonDisabled === false) {
+            return (
+                <Typography variant={"subtitle1"} paddingLeft={5} paddingBottom={2}>
+                    {errorClasses.bannerErrorMessage}. Click "Undo Changes"!
+                </Typography>
+            )
+        }
+    }
+
     // Refactor this! Make is smarter than a simple if in here!
     // IDEA: Parse the content of the configuration and display the help message form nginx.org :D DO IT!
     return (
@@ -240,40 +291,50 @@ export function NginxInstance() {
                             </Grid>
                         ))}</Grid>) : (
                     <>
-                        <Typography variant={"h3"} paddingTop={2} onClick={() => {
-                            setConfiguration(undefined)
-                            setContainerId(undefined)
-                            setCFContent(undefined)
-                            setFileName(undefined)
-                            setNginxInstance({id: "", name: ""})
-                        }}>
-                            <Tooltip title="Back to Instances Overview">
-                                <IconButton className={"ngx-back-button"}>
-                                    <ArrowBackIosNewOutlined/>
-                                </IconButton>
-                            </Tooltip>
-                            {nginxInstance.name}
-                        </Typography>
-                        <Typography variant={"subtitle2"}>
-                            Id: {nginxInstance.id}
-                        </Typography>
+                        <Grid className={errorClasses.bannerBackground}>
+                            <Typography variant={"h3"} paddingTop={2}>
+                                <Tooltip title="Back to Instances Overview">
+                                    <IconButton className={"ngx-back-button"} onClick={() => {
+                                        setConfiguration(undefined)
+                                        setContainerId(undefined)
+                                        setCFContent(undefined)
+                                        setFileName(undefined)
+                                        setNginxInstance({id: "", name: ""})
+                                        setCF("")
+                                    }} disabled={errorClasses.backToDashboardDisabled}>
+                                        <ArrowBackIosNewOutlined/>
+                                    </IconButton>
+                                </Tooltip>
+                                {nginxInstance.name}
+                            </Typography>
+                            <Typography variant={"inherit"} paddingLeft={5} paddingBottom={2}>
+                                Container-ID: {nginxInstance.id}
+                            </Typography>
+                            {renderErrorMessageIfAny()}
+                        </Grid>
                         <Grid container marginY={2}>
-                            <ul>
-                                {configuration.map((file: string, index: number) => (
-                                    <li onClick={configurationFileOnClickHandler(file)}>
-                                        {file}
-                                    </li>
-                                ))
-                                }
-                            </ul>
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Configuration File</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={configFile}
+                                    label="Configuration File"
+                                    placeholder={"Select Configuration File"}
+                                    onChange={nginxConfigurationFileOnChangeHandler}>
+                                    {configuration.map((file: string, index: number) => (
+                                        <MenuItem value={file}>{file}</MenuItem>
+                                    ))
+                                    }
+                                </Select>
+                            </FormControl>
                         </Grid>
                         {!configurationFileContent ? (
                             <Grid container>
                                 <Grid item marginX={"auto"} marginY={10}>
-                                    <Box>
+                                    <Box display={"flex"} alignItems={"center"}>
+                                        <DataObjectIcon style={{marginRight: "1rem", fontSize: "4rem"}}/>
                                         <Typography variant={"h2"}>
-                                            <AnnouncementOutlinedIcon
-                                                style={{color: "navy", marginRight: "1rem", fontSize: "larger"}}/>
                                             No Configuration File selected! Please select one.
                                         </Typography>
                                     </Box>
@@ -284,21 +345,32 @@ export function NginxInstance() {
                             <Grid container>
                                 <Grid item sm={12}>
                                     <Typography variant={"h4"} marginY={2}>{fileName}</Typography>
-                                    <Button variant={"outlined"} startIcon={<SendAndArchiveOutlinedIcon/>}
-                                            onClick={saveConfigurationToFile(fileName, nginxInstance.id)}>Save
-                                        changes!</Button>
+                                    <Button variant={"outlined"} startIcon={<PublishIcon/>}
+                                            onClick={saveConfigurationToFile(fileName, nginxInstance.id)}>Publish</Button>
+                                    <Button variant={"outlined"} startIcon={<UndoIcon/>}
+                                            onClick={undoChanges}
+                                            color={"error"}
+                                            style={{marginLeft: "0.5rem"}}
+                                            disabled={errorClasses.undoChangesButtonDisabled}
+                                    >Undo Changes</Button>
                                 </Grid>
                                 <Grid item sm={12} lg={6} marginTop={2}>
+                                    <Typography variant={"h3"}>Configuration Editor</Typography>
                                     <Editor
                                         value={configurationFileContent}
                                         className={"nginx-config-editor"}
-                                        onFocus={registerListener}
                                         onValueChange={configurationFileContent => setCFContent(configurationFileContent)}
-                                        highlight={configurationFileContent => highlight(configurationFileContent, languages.nginx, "nginx")}
+                                        highlight={
+                                        configurationFileContent => highlight(configurationFileContent, languages.nginx, "nginx")
+                                            .split("\n")
+                                            .map((line, i) => `<span class='editorLineNumber'>${i + 1}</span>${line}`)
+                                            .join('\n')
+                                        }
                                         padding={10}
                                         style={{
                                             fontFamily: '"Fira code", "Fira Mono", monospace',
                                             fontSize: 14,
+                                            outline: 0
                                         }}
                                     />
                                 </Grid>
@@ -307,7 +379,7 @@ export function NginxInstance() {
                                         <Grid item sm={12} lg={8}>
                                             <Typography variant={"h3"}>Configuration Inspector</Typography>
                                             <Typography variant={"subtitle1"}>Learn more about the NGINX
-                                                directives</Typography>
+                                                directives (Alpha)</Typography>
                                             <Highlight {...defaultProps} code={configurationFileContent}
                                                        language={"clike"} theme={github}>
                                                 {({className, style, tokens, getLineProps, getTokenProps}) => (
@@ -333,13 +405,14 @@ export function NginxInstance() {
                                                 )}
                                             </Highlight>
                                         </Grid>
-                                        <Grid item sm={12} lg={4} borderLeft={"0.2rem solid"} borderColor={blue.A200} paddingLeft={2}>
-                                            {directiveInfo ?  (
+                                        <Grid item sm={12} lg={4} borderLeft={"0.2rem solid"} borderColor={blue.A200}
+                                              paddingLeft={2}>
+                                            {directiveInfo ? (
                                                 <>
                                                     <Typography variant={"h4"}>{directiveInfo.name}</Typography>
                                                     <Box>
-                                                     Syntax:
-                                                    <pre>{directiveInfo.syntax}</pre>
+                                                        Syntax:
+                                                        <pre>{directiveInfo.syntax}</pre>
                                                     </Box>
                                                     <Box>
                                                         {directiveInfo.information}

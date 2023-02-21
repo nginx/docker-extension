@@ -38,9 +38,6 @@ export class ConfigurationReference {
     }
 
     getDirectiveInformation(directive: string): any {
-        console.log(this.directives);
-        console.log(directive);
-        console.log(this.directives.get(directive));
         return this.directives.get(directive)
     }
 
