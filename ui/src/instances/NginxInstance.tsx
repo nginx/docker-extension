@@ -6,14 +6,10 @@ import {
     Container, FormControl,
     Grid,
     IconButton, InputLabel, Link, MenuItem,
-    Paper, Select, SelectChangeEvent, Tab,
-    Tabs,
-    TextareaAutosize,
+    Paper, Select, SelectChangeEvent, Tabs,
     Tooltip,
     Typography
 } from "@mui/material";
-import Highlight, {defaultProps} from "prism-react-renderer"
-import github from "prism-react-renderer/themes/github"
 import styled from "@emotion/styled";
 import "./Instance.css";
 
@@ -25,9 +21,15 @@ import "./prism-nginx.css";
 import "../Prism/prism-nginx.js";
 import {ConfigurationReference} from "../configuration/ConfigurationReference";
 import PublishIcon from '@mui/icons-material/Publish';
-import {blue} from "@mui/material/colors";
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import UndoIcon from '@mui/icons-material/Undo';
+import DnsIcon from '@mui/icons-material/Dns';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import {ConfigurationUi} from "../configurationUI/ConfigurationUi";
 
 interface NginxInstance {
     id: string,
@@ -61,11 +63,6 @@ export function NginxInstance() {
 
     const instanceService: any = new InstancesService()
 
-    useEffect(() => {
-            hooks.add("before-highlight", (env) => {
-                console.log(hooks.all);
-            })
-    })
     useEffect(() => {
         const instancePromise = async () => {
             instanceService.getInstances().then((data: any) => {
@@ -174,6 +171,11 @@ export function NginxInstance() {
             })
         })
     }
+    //Refactoring! Move this into a seperate component
+    const [tabValue, setTabValue] = useState('1');
+    const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+        setTabValue(newValue);
+    };
 
     const Pre = styled.pre`
       text-align: left;
@@ -264,10 +266,12 @@ export function NginxInstance() {
         }
     }
 
+
+
     // Refactor this! Make is smarter than a simple if in here!
     // IDEA: Parse the content of the configuration and display the help message form nginx.org :D DO IT!
     return (
-        <Container sx={{ m: 1 }}>
+        <Container sx={{m: 1}}>
             {!loading ? (
                 !configuration ? (
                     <Grid container> {
@@ -287,7 +291,7 @@ export function NginxInstance() {
                                     }
                                 </Box>
                             </Grid>
-                    ))}</Grid>) : (
+                        ))}</Grid>) : (
                     <Container>
                         <Grid className={errorClasses.bannerBackground}>
                             <Typography variant={"h3"} paddingTop={2}>
@@ -310,117 +314,83 @@ export function NginxInstance() {
                             </Typography>
                             {renderErrorMessageIfAny()}
                         </Grid>
-                        <Grid container marginY={2}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Configuration File</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={configFile}
-                                    label="Configuration File"
-                                    placeholder={"Select Configuration File"}
-                                    onChange={nginxConfigurationFileOnChangeHandler}>
-                                    {configuration.map((file: string, index: number) => (
-                                        <MenuItem value={file} key={index}>{file}</MenuItem>
-                                    ))
-                                    }
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        {!configurationFileContent ? (
-                            <Grid container>
-                                <Grid item marginX={"auto"} marginY={10}>
-                                    <Box display={"flex"} alignItems={"center"}>
-                                        <DataObjectIcon style={{marginRight: "1rem", fontSize: "4rem"}}/>
-                                        <Typography variant={"h2"}>
-                                            No Configuration File selected! Please select one.
-                                        </Typography>
-                                    </Box>
 
+                        <TabContext value={tabValue}>
+                            <Box>
+                                <Tabs value={tabValue} onChange={handleTabChange} aria-label="icon label tabs example">
+                                    <Tab icon={<DnsIcon/>} label="Servers" value={"1"}/>
+                                    <Tab icon={<BorderColorIcon/>} label="Configuration Editor" value={"2"}/>
+                                </Tabs>
+                            </Box>
+                            <TabPanel value={"1"}>
+                               <ConfigurationUi container={nginxInstance.id} />
+                            </TabPanel>
+                            <TabPanel value={"2"}>
+                                <Grid container marginY={2}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Configuration File</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={configFile}
+                                            label="Configuration File"
+                                            placeholder={"Select Configuration File"}
+                                            onChange={nginxConfigurationFileOnChangeHandler}>
+                                            {configuration.map((file: string, index: number) => (
+                                                <MenuItem value={file} key={index}>{file}</MenuItem>
+                                            ))
+                                            }
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
-                            </Grid>
-                        ) : (
-                            <Grid container>
-                                <Grid item sm={12}>
-                                    <Typography variant={"h4"} marginY={2}>{fileName}</Typography>
-                                    <Button variant={"outlined"} startIcon={<PublishIcon/>}
-                                            onClick={saveConfigurationToFile(fileName, nginxInstance.id)}>Publish</Button>
-                                    <Button variant={"outlined"} startIcon={<UndoIcon/>}
-                                            onClick={undoChanges}
-                                            color={"error"}
-                                            style={{marginLeft: "0.5rem"}}
-                                            disabled={errorClasses.undoChangesButtonDisabled}
-                                    >Undo Changes</Button>
-                                </Grid>
-                                <Grid item sm={12} lg={6} marginTop={2}>
-                                    <Typography variant={"h3"}>Configuration Editor</Typography>
-                                    <Editor
-                                        value={configurationFileContent}
-                                        className={"nginx-config-editor"}
-                                        onValueChange={configurationFileContent => setCFContent(configurationFileContent)}
-                                        highlight={
-                                        configurationFileContent => highlight(configurationFileContent, languages.nginx, "nginx")
-                                            .split("\n")
-                                            .map((line, i) => `<span class='editorLineNumber' key=${i}>${i + 1}</span>${line}`)
-                                            .join('\n')
-                                        }
-                                        padding={10}
-                                        style={{
-                                            fontFamily: '"Fira code", "Fira Mono", monospace',
-                                            fontSize: 14,
-                                            outline: 0
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item sm={12} lg={6}>
+                                {!configurationFileContent ? (
                                     <Grid container>
-                                        <Grid item sm={12} lg={8}>
-                                            <Typography variant={"h3"}>Configuration Inspector</Typography>
-                                            <Typography variant={"subtitle1"}>Learn more about the NGINX
-                                                directives (Alpha)</Typography>
-                                            <Highlight {...defaultProps} code={configurationFileContent}
-                                                       language={"clike"} theme={github}>
-                                                {({className, style, tokens, getLineProps, getTokenProps}) => (
-                                                    <Pre className={className} style={style}>
-                                                        {tokens.map((line, i) => (
-                                                            <Line key={i} {...getLineProps({line, key: i})}>
-                                                                <LineNo>{i + 1}</LineNo>
-                                                                <LineContent>
-                                                                    {line.map((token, key) => (
-                                                                            <span onClick={configSpanOnClickHandler}
-                                                                                    key={key} {...getTokenProps({
-                                                                                token,
-                                                                                key
-                                                                            })} />
-                                                                        )
-                                                                    )}
-                                                                </LineContent>
-                                                            </Line>
-                                                        ))}
-                                                    </Pre>
-                                                )}
-                                            </Highlight>
-                                        </Grid>
-                                        <Grid item sm={12} lg={4} borderLeft={"0.2rem solid"} borderColor={blue.A200}
-                                              paddingLeft={2}>
-                                            {directiveInfo ? (
-                                                <>
-                                                    <Typography variant={"h4"}>{directiveInfo.name}</Typography>
-                                                    <Box>
-                                                        Syntax:
-                                                        <pre>{directiveInfo.syntax}</pre>
-                                                    </Box>
-                                                    <Box>
-                                                        {directiveInfo.information}
-                                                    </Box>
-
-                                                </>
-                                            ) : (<></>)}
+                                        <Grid item marginX={"auto"} marginY={10}>
+                                            <Box display={"flex"} alignItems={"center"}>
+                                                <DataObjectIcon style={{marginRight: "1rem", fontSize: "4rem"}}/>
+                                                <Typography variant={"h2"}>
+                                                    No Configuration File selected! Please select one.
+                                                </Typography>
+                                            </Box>
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                            </Grid>
-                        )}
+                                ) : (
+                                    <Grid container>
+                                        <Grid item sm={12}>
+                                            <Typography variant={"h4"} marginY={2}>{fileName}</Typography>
+                                            <Button variant={"outlined"} startIcon={<PublishIcon/>}
+                                                    onClick={saveConfigurationToFile(fileName, nginxInstance.id)}>Publish</Button>
+                                            <Button variant={"outlined"} startIcon={<UndoIcon/>}
+                                                    onClick={undoChanges}
+                                                    color={"error"}
+                                                    style={{marginLeft: "0.5rem"}}
+                                                    disabled={errorClasses.undoChangesButtonDisabled}
+                                            >Undo Changes</Button>
+                                        </Grid>
+                                        <Grid item sm={12} lg={12} marginTop={2}>
+                                            <Typography variant={"h3"}>Configuration Editor</Typography>
+                                            <Editor
+                                                value={configurationFileContent}
+                                                className={"nginx-config-editor"}
+                                                onValueChange={configurationFileContent => setCFContent(configurationFileContent)}
+                                                highlight={
+                                                    configurationFileContent => highlight(configurationFileContent, languages.nginx, "nginx")
+                                                        .split("\n")
+                                                        .map((line, i) => `<span class='editorLineNumber' key=${i}>${i + 1}</span>${line}`)
+                                                        .join('\n')
+                                                }
+                                                padding={10}
+                                                style={{
+                                                    fontFamily: '"Fira code", "Fira Mono", monospace',
+                                                    fontSize: 14,
+                                                    outline: 0
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                )}
+                            </TabPanel>
+                        </TabContext>
                     </Container>
                 )
             ) : (<Typography variant='h3'>Loading...</Typography>)}

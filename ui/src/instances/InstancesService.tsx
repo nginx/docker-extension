@@ -62,7 +62,6 @@ export class InstancesService {
             //Other than that, the response from the docker exec command does not have any easy to parse
             //reference to the container anymore. So putting it in Context while creating the containers array
             //make sense.
-
             return {
                 container: container.Id,
                 name: container.Names[0],
@@ -75,6 +74,7 @@ export class InstancesService {
                         '/bin/sh -c "nginx -v"'])
             }
         })
+        // Filtering out all Containers that are not NGINX.
         await Promise.all(promises.map(item => {
             return item.promise.then(result => {
                 if (!result.code) {
@@ -84,6 +84,15 @@ export class InstancesService {
             }).catch((error) => '')
         }))
         return promises;
+    }
+
+    async getInstanceConfiguration(containerId: string): Promise<any> {
+        const data = await this.ddClient.docker.cli.exec(
+            "exec",
+            [containerId,
+                "/bin/sh", "-c", `"nginx -T"`]);
+        // parse Configuration File and return array.
+        return data.stdout
     }
 
     async getConfigurations(containerId: string): Promise<any> {
@@ -100,11 +109,11 @@ export class InstancesService {
             "exec",
             [containerId,
                 "/bin/sh", "-c", `"cat ${file}"`]);
+        console.log(fileContent);
         return fileContent;
     }
 
     // Maybe this can be the default function to send docker exec commands?
-
     async sendConfigurationToFile(file: string, containerId: string, configurationB64: string): Promise<any> {
         const ret = await this.ddClient.docker.cli.exec(
             "exec",

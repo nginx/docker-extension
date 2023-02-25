@@ -176,24 +176,25 @@ server {
         index  index.html index.htm;
     }
     
-    location /test1/ { return 200 "OK  This works\n";}
-    
-    location /test2/ {
-      return 200 "OK  This works\n";
-    }
-    
-    location /test/ {
-      proxy_pass http://127.0.0.1:8080;
-    }
-    
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
+    location /test1/ { return 200 "OK  This works\\n";}
+
+location /test2/ {
+    return 200 "OK-This works\\n Another Line!";
+}
+
+location /test/ {
+    proxy_pass http://127.0.0.1:8080;
+}
+
+error_page   500 502 503 504  /50x.html;
+location = /50x.html {
+root   /usr/share/nginx/html;
+}
 }
 `
 
 const indent = 4;
+// GOT DAMN IT!!!!!! USE THE RIGHT FILES TO TEST! ALWAYS!!!!!!!
 let confArray = confStr.split('\n');
 // remove all empty lines from array
 confArray = confArray.filter(n => n)
@@ -202,7 +203,7 @@ confArray = confArray.filter(n => n)
 // logic to write
 // detect open context block if HTTP or stream. Set in HTTP or in Stream. If in HTTP look for server config context
 
-// server can be a one liner as well. BUT that means that the LAST character of the line text is a `}`
+// server can be a one-liner as well. BUT that means that the LAST character of the line text is a `}`
 let inHttpContext = false;
 let inStreamContext = false;
 let inServerContext = false;
@@ -228,15 +229,12 @@ confArray.map(line => {
 
     // remove all whitespaces. They will be re-implemented using the ident.
     line = line.trim();
-
-
     // if line ends with `;` it is a value line. Check current context and proceed.
     if (line.substring(line.length -1) === ';') {
         //remove `;` from line end.
         line = line.substring(0, line.length-1)
         //split the configuration by SPACE.
         const config = line.split(' ').filter(n => n);
-        console.log(config)
         //first will be directive, others values.
         const obj = {'directive': config[0], 'paramter': config[1]}
 
@@ -268,7 +266,7 @@ confArray.map(line => {
       console.log(`One-Liner: need special handling ${line}`);
       return
     }
-    // Let' s check for http-context.
+    // Let's check for http-context.
         if (line.match('http') && line.substring(line.length - 1) === '{') {
             inHttpContext = true
             console.log("In Http Context! Welcome! Adding new level");
