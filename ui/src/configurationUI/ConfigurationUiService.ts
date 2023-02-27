@@ -15,6 +15,4 @@ export class ConfigurationUiService {
         const config = await this.instanceService.getInstanceConfiguration(containerId);
         return this.configurationParser.parse(config);
     }
-
-
 }

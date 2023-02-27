@@ -18,7 +18,7 @@ import {Unarchive, Archive, ArrowBackIosNewOutlined} from "@mui/icons-material";
 import Editor from "react-simple-code-editor"
 import {languages, highlight, hooks} from "prismjs";
 import "./prism-nginx.css";
-import "../Prism/prism-nginx.js";
+import "../prism/prism-nginx.js";
 import {ConfigurationReference} from "../configuration/ConfigurationReference";
 import PublishIcon from '@mui/icons-material/Publish';
 import DataObjectIcon from '@mui/icons-material/DataObject';
@@ -31,7 +31,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import {ConfigurationUi} from "../configurationUI/ConfigurationUi";
 
-interface NginxInstance {
+interface NginxInstances {
     id: string,
     name: string
 }
@@ -56,7 +56,7 @@ export function NginxInstance() {
     });
 
     //new State Object - old stuff has to be refactored!
-    const [nginxInstance, setNginxInstance] = useState<NginxInstance>({id: "", name: ""})
+    const [nginxInstance, setNginxInstance] = useState<NginxInstances>({id: "", name: ""})
     // Holds the "original" Configuration before modifying to be able to role-back in case of errors.
     const [oldConfiguration, setOldConfiguration] = useState<string>("");
     const [directiveInfo, setDirectiveInfo] = useState<any>({})
@@ -265,9 +265,6 @@ export function NginxInstance() {
             )
         }
     }
-
-
-
     // Refactor this! Make is smarter than a simple if in here!
     // IDEA: Parse the content of the configuration and display the help message form nginx.org :D DO IT!
     return (
@@ -276,6 +273,7 @@ export function NginxInstance() {
                 !configuration ? (
                     <Grid container> {
                         instances.map((inst: any, key: number) => (
+                            //Refactoring Component Instance
                             <Grid item sm={6} lg={4} key={key}>
                                 <Box className={"ngx-instance"} borderRadius={1} boxShadow={5} margin={2} padding={2}
                                      border={"1px solid gray"}

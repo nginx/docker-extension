@@ -1,4 +1,5 @@
 interface ServerConfiguration {
+    names: Array<any>,
     listeners: Array<any>
     locations: Array<any>
 }
@@ -29,7 +30,7 @@ export class ConfigurationParser {
         let inServerContext = false;
         let inLocationContext = false;
 
-        let currentServerConfiguration: ServerConfiguration = {listeners: [], locations: []};
+        let currentServerConfiguration: ServerConfiguration = {names: [], listeners: [], locations: []};
 
         let locationConfiguration = {'location': undefined, 'configuration': []}
         // New JSON-based Configuration.
@@ -99,7 +100,7 @@ export class ConfigurationParser {
             if (line.match('server') && line.substring(line.length - 1) === '{') {
                 // Add new Server Object in Array.
                 console.log(`Begin of Server context`);
-                currentServerConfiguration = {'listeners': [], 'locations': []}
+                currentServerConfiguration = {'names': [], 'listeners': [], 'locations': []}
                 inServerContext = true
                 //?
                 inLocationContext = false
@@ -110,6 +111,13 @@ export class ConfigurationParser {
                 // Listeners found: Configuration:
                 console.log(line.split(' ').filter(n => n));
                 currentServerConfiguration.listeners.push(line.split(' ').filter(n => n)[1])
+
+            }
+
+            if (line.match('server_name')) {
+                // Server Name found: Add to server names array:
+                console.log(line.split(' ').filter(n => n));
+                currentServerConfiguration.names.push(line.split(' ').filter(n => n)[1])
 
             }
 

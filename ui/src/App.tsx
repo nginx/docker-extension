@@ -1,7 +1,7 @@
 import React from 'react';
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 import { Typography } from '@mui/material';
-import {NginxInstance} from "./instances/NginxInstance";
+import {NginxInstance} from "./instances/NginxInstances";
 
 const client = createDockerDesktopClient();
 
