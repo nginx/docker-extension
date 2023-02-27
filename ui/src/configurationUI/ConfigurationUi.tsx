@@ -31,7 +31,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {state.configuration.http.servers.map((server, index) => (
+                    {state.configuration.http.servers.map((server: any, index: number) => (
                         <TableRow
                             key={index}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -40,13 +40,12 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                                 {server.names.join(',')}
                             </TableCell>
                             <TableCell align="right">
-                                {server.listeners.map((listener, index) => (
+                                {server.listeners.map((listener: any, index: number) => (
                                     <Chip key={index} label={listener} variant="outlined" />
                                 ))}
                             </TableCell>
                             <TableCell align="right">
-                                {server.locations.map((location, index) => (
-                                    //Does this makes sense? Ask community.
+                                {server.locations.map((location: any, index: number) => (
                                     <Chip key={index} label={location.location} variant="outlined" />
                                 ))}
                                 + (add new)
