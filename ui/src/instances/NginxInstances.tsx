@@ -32,7 +32,8 @@ import {ConfigurationUi} from "../configurationUI/ConfigurationUi";
 
 interface NginxInstances {
     id: string,
-    name: string
+    name: string,
+    mounts: Array<any>
 }
 
 export function NginxInstance() {
@@ -55,7 +56,7 @@ export function NginxInstance() {
     });
 
     //new State Object - old stuff has to be refactored!
-    const [nginxInstance, setNginxInstance] = useState<NginxInstances>({id: "", name: ""})
+    const [nginxInstance, setNginxInstance] = useState<NginxInstances>({id: "", name: "", mounts: []})
     // Holds the "original" Configuration before modifying to be able to role-back in case of errors.
     const [oldConfiguration, setOldConfiguration] = useState<string>("");
 
@@ -101,7 +102,9 @@ export function NginxInstance() {
                     return ""
                 }
             })
-            setNginxInstance({id: containerId, name: name})
+
+            const mounts = instances.find(({id}: any) => id === containerId).mounts || []
+            setNginxInstance({id: containerId, name: name, mounts: mounts })
             setConfiguration(filesArray)
         })
 
@@ -303,7 +306,7 @@ export function NginxInstance() {
                                         setContainerId(undefined)
                                         setCFContent(undefined)
                                         setFileName(undefined)
-                                        setNginxInstance({id: "", name: ""})
+                                        setNginxInstance({id: "", name: "", mounts: [] })
                                         setCF("")
                                     }} disabled={errorClasses.backToDashboardDisabled}>
                                         <ArrowBackIosNewOutlined/>
@@ -325,7 +328,7 @@ export function NginxInstance() {
                                 </Tabs>
                             </Box>
                             <TabPanel value={"1"}>
-                                <ConfigurationUi container={nginxInstance.id}/>
+                                <ConfigurationUi containerId={nginxInstance.id} nginxInstance={nginxInstance} />
                             </TabPanel>
                             <TabPanel value={"2"}>
                                 <Grid container marginY={2}>
