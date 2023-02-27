@@ -13,7 +13,7 @@ import {
 import styled from "@emotion/styled";
 import "./Instance.css";
 
-import {Unarchive, Archive, ArrowBackIosNewOutlined} from "@mui/icons-material";
+import {Unarchive, Archive, ArrowBackIosNewOutlined, Folder, DriveFileMove} from "@mui/icons-material";
 
 import Editor from "react-simple-code-editor"
 import {languages, highlight, hooks} from "prismjs";
@@ -27,7 +27,6 @@ import DnsIcon from '@mui/icons-material/Dns';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import {ConfigurationUi} from "../configurationUI/ConfigurationUi";
 
@@ -59,24 +58,22 @@ export function NginxInstance() {
     const [nginxInstance, setNginxInstance] = useState<NginxInstances>({id: "", name: ""})
     // Holds the "original" Configuration before modifying to be able to role-back in case of errors.
     const [oldConfiguration, setOldConfiguration] = useState<string>("");
-    const [directiveInfo, setDirectiveInfo] = useState<any>({})
 
     const instanceService: any = new InstancesService()
 
     useEffect(() => {
         const instancePromise = async () => {
             instanceService.getInstances().then((data: any) => {
-                // add to the component\
                 const instancesArray: Array<any> = []
                 data.map(async (inst: any, index: number) => {
-                    const container = await Promise.resolve(inst.promise).catch((error) => {
+                    const container = await Promise.resolve(inst.promise).catch((reason: any) => {
                     })
-                    // Refactoring needed here!
                     if (container != undefined && !container.code) {
                         instancesArray.push({
                             id: inst.container,
                             out: container.stderr,
                             ports: inst.ports,
+                            mounts: inst.mounts,
                             status: inst.status,
                             name: inst.name.replace("/", "")
                         })
@@ -115,7 +112,6 @@ export function NginxInstance() {
             setOldConfiguration(data.stdout)
             setCFContent(data.stdout);
             setFileName(fileName);
-
         }).catch((error: any) => console.error())
 
     }
@@ -134,8 +130,6 @@ export function NginxInstance() {
                     bannerErrorMessage: ""
                 });
             }).catch((reason: any) => {
-                //hacky as hell! Needs reafactoring!
-                console.log((reason.stderr))
                 instanceService.displayErrorMessage(`Error while updating configuration: ${reason.stderr.split("\n")[1]}`);
                 setErrorClasses({
                     bannerBackground: "nginx-banner-error",
@@ -238,11 +232,20 @@ export function NginxInstance() {
         }
     }
 
-    const configSpanOnClickHandler: any = (event: any) => {
-        console.log(event.currentTarget.innerText.trim());
-        const ccr = new ConfigurationReference();
-        const dirInfo = ccr.getDirectiveInformation(event.currentTarget.innerText.trim());
-        setDirectiveInfo(dirInfo)
+    /*
+    * Render the Mount-Points of a given Container
+    * */
+    const containerMount: any = (mounts: any) => {
+        if (mounts.length >= 1) {
+            return (<Box>
+                <IconButton>
+                    <DriveFileMove/>
+                </IconButton>
+                Volumes mounted: {mounts.length}
+            </Box>)
+        } else {
+            return ""
+        }
     }
 
     const [configFile, setCF] = useState("")
@@ -287,6 +290,7 @@ export function NginxInstance() {
                                         </Box>
                                     ))
                                     }
+                                    {containerMount(inst.mounts)}
                                 </Box>
                             </Grid>
                         ))}</Grid>) : (
@@ -321,7 +325,7 @@ export function NginxInstance() {
                                 </Tabs>
                             </Box>
                             <TabPanel value={"1"}>
-                               <ConfigurationUi container={nginxInstance.id} />
+                                <ConfigurationUi container={nginxInstance.id}/>
                             </TabPanel>
                             <TabPanel value={"2"}>
                                 <Grid container marginY={2}>

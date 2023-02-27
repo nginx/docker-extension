@@ -31,6 +31,7 @@ interface Container {
     State: string,
     Status: string,
     NetworkSettings: any
+    Mounts: any
 }
 
 /*
@@ -55,7 +56,6 @@ export class InstancesService {
         //listContainers returns a Promises from Type Array<Container>
 
         const containers = await this.ddClient.docker.listContainers() as Array<Container>;
-
         //Loop over all containers and check if NGINX is installed.
         const promises = containers.map(container => {
             //Handling Promise in Map is tricky. So, using `Promise.all` seams the best solution here.
@@ -68,6 +68,7 @@ export class InstancesService {
                 ports: container.Ports,
                 status: container.Status,
                 network: container.NetworkSettings.Networks,
+                mounts: container.Mounts || {},
                 promise: this.ddClient.docker.cli.exec(
                     "exec",
                     ["-i", `${container.Id}`,
@@ -109,7 +110,6 @@ export class InstancesService {
             "exec",
             [containerId,
                 "/bin/sh", "-c", `"cat ${file}"`]);
-        console.log(fileContent);
         return fileContent;
     }
 
