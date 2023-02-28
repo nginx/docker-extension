@@ -8,7 +8,9 @@ import {
     IconButton, InputLabel, Link, MenuItem,
     Paper, Select, SelectChangeEvent, Tabs,
     Tooltip,
-    Typography
+    ThemeProvider,
+    Typography,
+    createTheme
 } from "@mui/material";
 import styled from "@emotion/styled";
 import "./Instance.css";
@@ -197,6 +199,25 @@ export function NginxInstance() {
       display: table-cell;
     `;
 
+    const listTheme = createTheme({
+        typography: {
+            h3: {
+                fontSize: 30,
+            },
+            subtitle2: {
+                fontSize: 13,
+                opacity: .6,
+                overflow: 'hidden',
+            },
+            body1: {
+                fontWeight: 400,
+            },
+            body2: {
+                fontWeight: 600,
+            },
+        },
+      });
+
     const containerNetwork: any = (port: any) => {
         if (port.PrivatePort && port.PublicPort) {
             return (<Box paddingTop={2}>
@@ -277,26 +298,30 @@ export function NginxInstance() {
         <Container sx={{m: 1}}>
             {!loading ? (
                 !configuration ? (
-                    <Grid container> {
-                        instances.map((inst: any, key: number) => (
-                            //Refactoring Component Instance
-                            <Grid item sm={6} lg={4} key={key}>
-                                <Box className={"ngx-instance"} borderRadius={1} boxShadow={5} margin={2} padding={2}
-                                     border={"1px solid gray"}
-                                     onClick={nginxInstanceOnClickHandler(inst.id, inst.name)}>
-                                    <Typography variant="h3">{inst.name}</Typography>
-                                    <Typography variant="subtitle1" paddingY={2}>{inst.status}</Typography>
-                                    {inst.out}
-                                    {inst.ports.map((port: any, key: number) => (
-                                        <Box key={key}>
-                                            {containerNetwork(port)}
+                    <ThemeProvider theme={listTheme}>
+                        <Typography variant="subtitle2">Active containers running NGINX</Typography>
+                        <Grid container> {
+                                instances.map((inst: any, key: number) => (
+                                    //Refactoring Component Instance
+                                    <Grid item sm={6} lg={4} key={key}>
+                                        <Box className={"ngx-instance"} borderRadius={1} boxShadow={5} margin={2} padding={2}
+                                            border={"1px solid gray"}
+                                            onClick={nginxInstanceOnClickHandler(inst.id, inst.name)}>
+                                            <Typography variant="h3">{inst.name}</Typography>
+                                            <Typography variant="subtitle2">Container ID: {inst.id.substring(0,8)}...</Typography>
+                                            <Typography variant="body1" paddingTop={1}>Status: {inst.status.toLowerCase()}</Typography>
+                                            <Typography variant="body1">NGINX Version: {inst.out.substring(15, inst.out.length)}</Typography>
+                                            {inst.ports.map((port: any, key: number) => (
+                                                <Box key={key}>
+                                                    {containerNetwork(port)}
+                                                </Box>
+                                            ))}
+                                            {containerMount(inst.mounts)}
                                         </Box>
-                                    ))
-                                    }
-                                    {containerMount(inst.mounts)}
-                                </Box>
-                            </Grid>
-                        ))}</Grid>) : (
+                                    </Grid>
+                                ))}
+                        </Grid>
+                    </ThemeProvider>) : (
                     <Container>
                         <Grid className={errorClasses.bannerBackground}>
                             <Typography variant={"h3"} paddingTop={2}>
