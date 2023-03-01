@@ -1,18 +1,20 @@
 import React, {useEffect, useState} from "react";
 import {ConfigurationUiService} from "./ConfigurationUiService";
 import {
-    Box,
-    Chip,
-    Paper,
+    Box, Button,
+    Chip, IconButton,
+    Paper, Slide,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
+    TableRow, Tooltip,
     Typography
 } from "@mui/material";
-import {Add, PlusOne} from "@mui/icons-material";
+import {Add, ArrowBackIosNewOutlined, PlusOne} from "@mui/icons-material";
+import {Location} from "./Location";
+import {Server} from "./Server";
 
 interface ConfigurationUiProps {
     containerId: string,
@@ -56,7 +58,6 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
                                         <TableCell component="th" scope="row">
-                                            Test
                                         </TableCell>
                                         <TableCell align="right">
                                             {mount.Type}
@@ -77,13 +78,95 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
         }
     }
 
+    const [serverSlide, setServerSlide] = useState(false);
+    const handleChangeServer = () => {
+        setServerSlide((prev) => !prev);
+    };
+
+    const content = (
+        <Box
+            sx={{ width: "100%", height: "100vh" }}
+            style={{
+                position: "absolute",
+                top: "0",
+                zIndex: "99",
+                right: "0",
+                display: "flex",
+                flexDirection: "row-reverse",
+                backgroundColor: "transparent"
+            }}
+        >
+            <Box
+                style={{
+                    display: "flex",
+                    width: "75%",
+                    height: "100vh",
+                    borderLeft: "2px solid blue",
+                    flexDirection: "column",
+                    backgroundColor: "rgba(255,255,255,1)",
+                    alignItems: "flex-start"
+                }}
+            >
+                <Button onClick={handleChangeServer}>Close</Button>
+                <Server/>
+            </Box>
+        </Box>
+    );
+
+    const [locationSlide, setLocationSlide] = useState(false);
+    const handleChangeLocation = () => {
+        setLocationSlide((prev) => !prev);
+    };
+
+    const contentLocation = (
+        <Box
+            sx={{ width: "100%", height: "100vh" }}
+            style={{
+                position: "absolute",
+                top: "0",
+                zIndex: "99",
+                right: "0",
+                display: "flex",
+                flexDirection: "row-reverse",
+                backgroundColor: "transparent"
+            }}
+        >
+            <Box
+                style={{
+                    display: "flex",
+                    width: "75%",
+                    height: "100vh",
+                    borderLeft: "2px solid blue",
+                    flexDirection: "column",
+                    backgroundColor: "rgba(255,255,255,1)",
+                    alignItems: "flex-start"
+                }}
+            >
+                <Button onClick={handleChangeLocation}>Close</Button>
+                <Location/>
+            </Box>
+        </Box>
+    );
+
     return (
         <>
+            <Slide direction="left" in={serverSlide} mountOnEnter unmountOnExit>
+                {content}
+            </Slide>
+            <Slide direction="left" in={locationSlide} mountOnEnter unmountOnExit>
+                {contentLocation}
+            </Slide>
             <TableContainer component={Paper}>
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Server</TableCell>
+                            <TableCell>Server
+                                <Tooltip title="New Virtual Server">
+                                    <IconButton className={"ngx-back-button"} onClick={handleChangeServer} sx={{fontSize:"0.9rem"}}>
+                                        <Add/>
+                                    </IconButton>
+                                </Tooltip>
+                            </TableCell>
                             <TableCell align="right">Ports</TableCell>
                             <TableCell align="right">Locations</TableCell>
                             <TableCell align="right">Actions</TableCell>
@@ -107,7 +190,11 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                                     {server.locations.map((location: any, index: number) => (
                                         <Chip key={index} label={location.location} variant="outlined"/>
                                     ))}
-                                    + (add new)
+                                    <Tooltip title="Add New Location">
+                                        <IconButton className={"ngx-back-button"} onClick={handleChangeLocation} sx={{fontSize:"0.9rem"}}>
+                                            <Add/>
+                                        </IconButton>
+                                    </Tooltip>
                                 </TableCell>
                                 <TableCell align="right">Edit, Delete</TableCell>
                             </TableRow>

@@ -131,11 +131,6 @@ export class InstancesService {
         return ret
     }
 
-    parseConfigurationFiles(configuration: string): Array<string> {
-        let filesToParse: Array<string> = []
-        return filesToParse
-    }
-
     displaySuccessMessage(message: string): void {
         this.ddClient.desktopUI.toast.success(message)
     }

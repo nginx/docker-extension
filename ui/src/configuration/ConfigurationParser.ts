@@ -69,6 +69,11 @@ export class ConfigurationParser {
                 }
             }
 
+            // Comment line - skip
+            if (line.substring(0,1) === '#') {
+                    return
+                }
+
             if (line.length === 1 && line.substring(line.length - 1) === '}') {
                 if (inLocationContext) {
                     console.log(`Closing Location configuration block`)
@@ -136,7 +141,7 @@ export class ConfigurationParser {
                 return
             }
         })
-
+        console.log(configuration)
         return configuration
     }
 }
