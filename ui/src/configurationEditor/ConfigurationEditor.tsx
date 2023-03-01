@@ -2,11 +2,11 @@ import {
     Box,
     Button,
     FormControl,
-    Grid,
+    Grid, IconButton,
     InputLabel,
     MenuItem,
     Select,
-    SelectChangeEvent,
+    SelectChangeEvent, Slide, Tooltip,
     Typography
 } from "@mui/material";
 import DataObjectIcon from "@mui/icons-material/DataObject";
@@ -18,6 +18,9 @@ import "./prism-nginx.css";
 import "../prism/prism-nginx.js";
 import React, {useEffect, useState} from "react";
 import {InstancesService} from "../instances/InstancesService";
+import {Add} from "@mui/icons-material";
+import {Server} from "../configurationUI/Server";
+import {NewConfigurationFile} from "./NewConfigurationFile";
 
 interface ConfigurationEditorProps {
     nginxInstance: any
@@ -32,6 +35,7 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
     const [configurationFileContent, setCFContent] = useState<any>("");
     const [oldConfiguration, setOldConfiguration] = useState<string>("");
     const [configuration, setConfiguration] = useState<any>([])
+    const [newConfigurationFileSlide, setNewConfigurationFileSlide] = useState(false);
     const [errorClasses, setErrorClasses] = useState<any>({
         bannerBackground: "nginx-banner-neutral",
         bannerErrorMessage: "",
@@ -68,7 +72,6 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
         }).catch((error: any) => console.error())
 
     }
-
     const saveConfigurationToFile: any = (file: string, containerId: string) => (event: any) => {
         //build dynamically from TextInput as B64.
         const content = btoa(configurationFileContent)
@@ -126,8 +129,45 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
         })
     }
 
+    const handleNewConfigurationFileSlide = () => {
+        setNewConfigurationFileSlide((prev) => !prev);
+    };
+
+    const content = (
+        <Box
+            sx={{width: "100%", height: "100vh"}}
+            style={{
+                position: "absolute",
+                top: "0",
+                zIndex: "99",
+                right: "0",
+                display: "flex",
+                flexDirection: "row-reverse",
+                backgroundColor: "transparent"
+            }}
+        >
+            <Box
+                style={{
+                    display: "flex",
+                    width: "75%",
+                    height: "100vh",
+                    borderLeft: "2px solid blue",
+                    flexDirection: "column",
+                    backgroundColor: "rgba(255,255,255,1)",
+                    alignItems: "flex-start"
+                }}
+            >
+                <Button onClick={handleNewConfigurationFileSlide}>Close</Button>
+                <NewConfigurationFile />
+            </Box>
+        </Box>
+    );
+
     return (
         <>
+            <Slide direction="left" in={newConfigurationFileSlide} mountOnEnter unmountOnExit>
+                {content}
+            </Slide>
             <Grid container marginY={2}>
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Configuration File</InputLabel>
@@ -147,21 +187,30 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
             </Grid>
             {!configurationFileContent ? (
                 <Grid container>
-                    <Grid item marginX={"auto"} marginY={10}>
+                    <Grid item marginX={"auto"} marginY={10} textAlign={"center"}>
                         <Box display={"flex"} alignItems={"center"}>
                             <DataObjectIcon style={{marginRight: "1rem", fontSize: "4rem"}}/>
                             <Typography variant={"h2"}>
                                 No Configuration File selected! Please select one.
                             </Typography>
                         </Box>
+                        <Button variant="contained" color={"success"} onClick={handleNewConfigurationFileSlide}
+                                endIcon={<Add/>}>
+                            Create New Configuration File
+                        </Button>
                     </Grid>
                 </Grid>
             ) : (
                 <Grid container>
                     <Grid item sm={12}>
-                        <Typography variant={"h4"} marginY={2}>{fileName}</Typography>
+                        <Typography variant={"h4"} marginY={2}>
+                            {fileName}
+                        </Typography>
+                        <Button variant={"outlined"} color={"success"} startIcon={<Add/>}
+                                onClick={handleNewConfigurationFileSlide}>New File</Button>
                         <Button variant={"outlined"} startIcon={<PublishIcon/>}
-                                onClick={saveConfigurationToFile(fileName, props.nginxInstance.id)}>Publish</Button>
+                                onClick={saveConfigurationToFile(fileName, props.nginxInstance.id)}
+                                style={{marginLeft: "0.5rem"}}>Publish</Button>
                         <Button variant={"outlined"} startIcon={<UndoIcon/>}
                                 onClick={undoChanges}
                                 color={"error"}

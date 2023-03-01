@@ -1,12 +1,11 @@
-import React, {MouseEventHandler, ReactComponentElement, useEffect, useState} from 'react';
+import React, {MouseEventHandler, useEffect, useState} from 'react';
 import {InstancesService} from "./InstancesService";
 import {
     Box,
-    Button,
-    Container, FormControl,
+    Container,
     Grid,
-    IconButton, InputLabel, Link, MenuItem,
-    Paper, Select, SelectChangeEvent, Tabs,
+    IconButton,
+    Tabs,
     Tooltip,
     ThemeProvider,
     Typography,
@@ -17,12 +16,6 @@ import "./Instance.css";
 
 import {Unarchive, Archive, ArrowBackIosNewOutlined, Folder, DriveFileMove} from "@mui/icons-material";
 
-import Editor from "react-simple-code-editor"
-import {languages, highlight, hooks} from "prismjs";
-import {ConfigurationReference} from "../configuration/ConfigurationReference";
-import PublishIcon from '@mui/icons-material/Publish';
-import DataObjectIcon from '@mui/icons-material/DataObject';
-import UndoIcon from '@mui/icons-material/Undo';
 import DnsIcon from '@mui/icons-material/Dns';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Tab from '@mui/material/Tab';
@@ -89,7 +82,7 @@ export function NginxInstance() {
     const nginxInstanceOnClickHandler: MouseEventHandler<HTMLLIElement> | any = (containerId: string, name: string) => (event: MouseEventHandler<HTMLLIElement>) => {
         instanceService.getConfigurations(containerId).then((data: any) => {
             const mounts = instances.find(({id}: any) => id === containerId).mounts || []
-            setNginxInstance({id: containerId, name: name, mounts: mounts })
+            setNginxInstance({id: containerId, name: name, mounts: mounts})
         })
     }
 
@@ -140,7 +133,7 @@ export function NginxInstance() {
                 fontWeight: 600,
             },
         },
-      });
+    });
 
     const containerNetwork: any = (port: any) => {
         if (port.PrivatePort && port.PublicPort) {
@@ -214,25 +207,29 @@ export function NginxInstance() {
                     <ThemeProvider theme={listTheme}>
                         <Typography variant="subtitle2">Active containers running NGINX</Typography>
                         <Grid container> {
-                                instances.map((inst: any, key: number) => (
-                                    //Refactoring Component Instance
-                                    <Grid item sm={6} lg={4} key={key}>
-                                        <Box className={"ngx-instance"} borderRadius={1} boxShadow={5} margin={2} padding={2}
-                                            border={"1px solid gray"}
-                                            onClick={nginxInstanceOnClickHandler(inst.id, inst.name)}>
-                                            <Typography variant="h3">{inst.name}</Typography>
-                                            <Typography variant="subtitle2">Container ID: {inst.id.substring(0,8)}...</Typography>
-                                            <Typography variant="body1" paddingTop={1}>Status: {inst.status.toLowerCase()}</Typography>
-                                            <Typography variant="body1">NGINX Version: {inst.out.substring(15, inst.out.length)}</Typography>
-                                            {inst.ports.map((port: any, key: number) => (
-                                                <Box key={key}>
-                                                    {containerNetwork(port)}
-                                                </Box>
-                                            ))}
-                                            {containerMount(inst.mounts)}
-                                        </Box>
-                                    </Grid>
-                                ))}
+                            instances.map((inst: any, key: number) => (
+                                //Refactoring Component Instance
+                                <Grid item sm={6} lg={4} key={key}>
+                                    <Box className={"ngx-instance"} borderRadius={1} boxShadow={5} margin={2}
+                                         padding={2}
+                                         border={"1px solid gray"}
+                                         onClick={nginxInstanceOnClickHandler(inst.id, inst.name)}>
+                                        <Typography variant="h3">{inst.name}</Typography>
+                                        <Typography variant="subtitle2">Container
+                                            ID: {inst.id.substring(0, 8)}...</Typography>
+                                        <Typography variant="body1"
+                                                    paddingTop={1}>Status: {inst.status.toLowerCase()}</Typography>
+                                        <Typography variant="body1">NGINX
+                                            Version: {inst.out.substring(15, inst.out.length)}</Typography>
+                                        {inst.ports.map((port: any, key: number) => (
+                                            <Box key={key}>
+                                                {containerNetwork(port)}
+                                            </Box>
+                                        ))}
+                                        {containerMount(inst.mounts)}
+                                    </Box>
+                                </Grid>
+                            ))}
                         </Grid>
                     </ThemeProvider>) : (
                     <Container>
@@ -241,7 +238,7 @@ export function NginxInstance() {
                                 <Tooltip title="Back to Instances Overview">
                                     <IconButton className={"ngx-back-button"} onClick={() => {
                                         setContainerId(undefined)
-                                        setNginxInstance({id: "", name: "", mounts: [] })
+                                        setNginxInstance({id: "", name: "", mounts: []})
                                     }} disabled={errorClasses.backToDashboardDisabled}>
                                         <ArrowBackIosNewOutlined/>
                                     </IconButton>
@@ -262,7 +259,7 @@ export function NginxInstance() {
                                 </Tabs>
                             </Box>
                             <TabPanel value={"1"}>
-                                <ConfigurationUi containerId={nginxInstance.id} nginxInstance={nginxInstance} />
+                                <ConfigurationUi containerId={nginxInstance.id} nginxInstance={nginxInstance}/>
                             </TabPanel>
                             <TabPanel value={"2"}>
                                 <ConfigurationEditor nginxInstance={nginxInstance}/>

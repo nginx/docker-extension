@@ -162,7 +162,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                         <TableRow>
                             <TableCell>Server
                                 <Tooltip title="New Virtual Server">
-                                    <IconButton className={"ngx-back-button"} onClick={handleChangeServer} sx={{fontSize:"0.9rem"}}>
+                                    <IconButton onClick={handleChangeServer} sx={{fontSize:"0.9rem"}}>
                                         <Add/>
                                     </IconButton>
                                 </Tooltip>
