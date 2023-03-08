@@ -33,3 +33,16 @@ docker extension dev debug nginx/nginx-dd-extension
 ```shell
 docker extension dev ui-source nginx/nginx-dd-extension http://localhost:3000 
 ```
+
+## Backlog
+
+### Re-Expose new Ports
+```shell
+docker commit CONTAINERID NEWIMAGE
+docker run NEWIMAGE -p ... -p.... -v POSSIBLE MOUNTS
+```
+### Export Configuration
+Export configuration files from inside the container to a projects directory on the local computer
+```shell
+docker cp CONTAINERID:/etc/nginx/conf.d/test.conf ./something/....
+```

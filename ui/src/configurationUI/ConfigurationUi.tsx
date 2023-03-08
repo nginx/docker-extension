@@ -169,7 +169,6 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                             </TableCell>
                             <TableCell align="right">Ports</TableCell>
                             <TableCell align="right">Locations</TableCell>
-                            <TableCell align="right">Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -188,7 +187,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                                 </TableCell>
                                 <TableCell align="right">
                                     {server.locations.map((location: any, index: number) => (
-                                        <Chip key={index} label={location.location} variant="outlined"/>
+                                        <Chip key={index} label={location.location} variant="outlined" sx={{textTransform: "inherit"}} />
                                     ))}
                                     <Tooltip title="Add New Location">
                                         <IconButton className={"ngx-back-button"} onClick={handleChangeLocation} sx={{fontSize:"0.9rem"}}>
@@ -196,7 +195,6 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                                         </IconButton>
                                     </Tooltip>
                                 </TableCell>
-                                <TableCell align="right">Edit, Delete</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

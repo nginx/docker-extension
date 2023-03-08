@@ -14,7 +14,15 @@ import {
 import styled from "@emotion/styled";
 import "./Instance.css";
 
-import {Unarchive, Archive, ArrowBackIosNewOutlined, Folder, DriveFileMove} from "@mui/icons-material";
+import {
+    Unarchive,
+    Archive,
+    ArrowBackIosNewOutlined,
+    Folder,
+    DriveFileMove,
+    Store,
+    FileDownload
+} from "@mui/icons-material";
 
 import DnsIcon from '@mui/icons-material/Dns';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
@@ -137,37 +145,20 @@ export function NginxInstance() {
 
     const containerNetwork: any = (port: any) => {
         if (port.PrivatePort && port.PublicPort) {
-            return (<Box paddingTop={2}>
-
-                    <Tooltip title="Container Port">
-                        <IconButton>
-                            <Unarchive/>
-                        </IconButton>
+            return (
+                <Box paddingTop={2}>
+                    <Tooltip title={`${port.IP}:${port.PublicPort}:${port.PrivatePort}`}>
+                        <span>{port.PublicPort}:{port.PrivatePort}</span>
                     </Tooltip>
-                    <span>{port.PrivatePort}</span>
-                    <Tooltip title="Public Port">
-                        <IconButton>
-                            <Archive/>
-                        </IconButton>
-                    </Tooltip>
-                    <span>{port.IP}:{port.PublicPort}</span>
                 </Box>
             )
         }
         if (port.PrivatePort && !port.PublicPort) {
-            return (<Box paddingTop={2}>
-                    <Tooltip title="Container Port">
-                        <IconButton>
-                            <Unarchive/>
-                        </IconButton>
+            return (
+                <Box paddingTop={2}>
+                    <Tooltip title={port.PrivatePort}>
+                        <span>:{port.PrivatePort}</span>
                     </Tooltip>
-                    <span>{port.PrivatePort}</span>
-                    <Tooltip title="Port Not Exposed!">
-                        <IconButton>
-                            <Archive/>
-                        </IconButton>
-                    </Tooltip>
-                    <span>-</span>
                 </Box>
             )
         }
@@ -198,8 +189,7 @@ export function NginxInstance() {
             )
         }
     }
-    // Refactor this! Make is smarter than a simple if in here!
-    // IDEA: Parse the content of the configuration and display the help message form nginx.org :D DO IT!
+
     return (
         <Container sx={{m: 1}}>
             {!loading ? (
@@ -256,6 +246,8 @@ export function NginxInstance() {
                                 <Tabs value={tabValue} onChange={handleTabChange} aria-label="icon label tabs example">
                                     <Tab icon={<DnsIcon/>} label="Servers" value={"1"}/>
                                     <Tab icon={<BorderColorIcon/>} label="Configuration Editor" value={"2"}/>
+                                    <Tab icon={<Store/>} label="Templates Store" value={"3"}/>
+                                    <Tab icon={<FileDownload/>} label="Export Configuration" value={"4"}/>
                                 </Tabs>
                             </Box>
                             <TabPanel value={"1"}>
@@ -263,6 +255,12 @@ export function NginxInstance() {
                             </TabPanel>
                             <TabPanel value={"2"}>
                                 <ConfigurationEditor nginxInstance={nginxInstance}/>
+                            </TabPanel>
+                            <TabPanel value={"3"}>
+                                <>Templates</>
+                            </TabPanel>
+                            <TabPanel value={"4"}>
+                                <>Exports</>
                             </TabPanel>
                         </TabContext>
                     </Container>

@@ -12,21 +12,19 @@ import {
 import DataObjectIcon from "@mui/icons-material/DataObject";
 import PublishIcon from "@mui/icons-material/Publish";
 import UndoIcon from "@mui/icons-material/Undo";
-import Editor from "react-simple-code-editor";
-import {highlight, languages} from "prismjs";
-import "./prism-nginx.css";
-import "../prism/prism-nginx.js";
 import React, {useEffect, useState} from "react";
 import {InstancesService} from "../instances/InstancesService";
-import {Add} from "@mui/icons-material";
-import {Server} from "../configurationUI/Server";
+import {Add, Close, FileDownload} from "@mui/icons-material";
 import {NewConfigurationFile} from "./NewConfigurationFile";
+import {createDockerDesktopClient} from "@docker/extension-api-client";
+import {Editor} from "../prism/Editor";
 
 interface ConfigurationEditorProps {
     nginxInstance: any
 
 }
 
+//Reafactor! Dependency violation!
 let instanceService: InstancesService = new InstancesService()
 
 export function ConfigurationEditor(props: ConfigurationEditorProps) {
@@ -46,9 +44,6 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
     useEffect(() => {
         const getConfiguration = async () => {
             instanceService.getConfigurations(props.nginxInstance.id).then((data: any) => {
-                //Config-Files into array!
-                //@todo Refactoring: Make this more type save and check what
-                // Typescript can do with undefined and null values
                 let filesArray: Array<string> = data
                 filesArray = filesArray.filter(item => item != "").map((item: string) => {
                     let match = item.match('(?:\\/etc\\/nginx\\/.*)');
@@ -157,11 +152,19 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
                     alignItems: "flex-start"
                 }}
             >
-                <Button onClick={handleNewConfigurationFileSlide}>Close</Button>
-                <NewConfigurationFile />
+                <Close onClick={handleNewConfigurationFileSlide} sx={{cursor: 'pointer'}} />
+                <NewConfigurationFile nginxInstance={props.nginxInstance} instanceService={instanceService}/>
             </Box>
         </Box>
     );
+
+    const handleExportConfigurationFile = async () => {
+        let ddClient = createDockerDesktopClient();
+
+        const result: any = await ddClient.desktopUI.dialog.showOpenDialog({
+            properties: ["openDirectory"],
+        });
+    }
 
     return (
         <>
@@ -211,6 +214,10 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
                         <Button variant={"outlined"} startIcon={<PublishIcon/>}
                                 onClick={saveConfigurationToFile(fileName, props.nginxInstance.id)}
                                 style={{marginLeft: "0.5rem"}}>Publish</Button>
+                        <Button variant={"outlined"} startIcon={<FileDownload/>}
+                                style={{marginLeft: "0.5rem"}}
+                                onClick={handleExportConfigurationFile}
+                        >Export File</Button>
                         <Button variant={"outlined"} startIcon={<UndoIcon/>}
                                 onClick={undoChanges}
                                 color={"error"}
@@ -220,23 +227,8 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
                     </Grid>
                     <Grid item sm={12} lg={12} marginTop={2}>
                         <Typography variant={"h3"}>Configuration Editor</Typography>
-                        <Editor
-                            value={configurationFileContent}
-                            className={"nginx-config-editor"}
-                            onValueChange={configurationFileContent => setCFContent(configurationFileContent)}
-                            highlight={
-                                configurationFileContent => highlight(configurationFileContent, languages.nginx, "nginx")
-                                    .split("\n")
-                                    .map((line, i) => `<span class='editorLineNumber' key=${i}>${i + 1}</span>${line}`)
-                                    .join('\n')
-                            }
-                            padding={10}
-                            style={{
-                                fontFamily: '"Fira code", "Fira Mono", monospace',
-                                fontSize: 14,
-                                outline: 0
-                            }}
-                        />
+                        <Editor setConfigurationFileContent={setCFContent}
+                                fileContent={configurationFileContent}/>
                     </Grid>
                 </Grid>
             )}
