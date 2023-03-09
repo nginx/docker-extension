@@ -10,6 +10,7 @@
 
 .nginx-config-editor textarea {
     left: 50px!important;
+    white-space: pre!important;
 }
 
 .nginx-config-editor #codeArea {
@@ -19,6 +20,7 @@
 
 .nginx-config-editor pre {
     padding-left: 60px !important;
+    white-space: pre!important;
 }
 
 .nginx-config-editor .editorLineNumber {

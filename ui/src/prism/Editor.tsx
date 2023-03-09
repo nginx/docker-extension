@@ -26,7 +26,7 @@ export function Editor(props: EditorProps) {
             className={"nginx-config-editor"}
             onValueChange={handleChange}
             highlight={
-                configurationFileContent => highlight(props.fileContent, languages.nginx, "nginx")
+                configurationFileContent => highlight(props.fileContent, languages.nginx, "bash")
                     .split("\n")
                     .map((line, i) => `<span class='editorLineNumber' key=${i}>${i + 1}</span>${line}`)
                     .join('\n')
@@ -36,6 +36,7 @@ export function Editor(props: EditorProps) {
                 ...props.style,
                 fontFamily: '"Fira code", "Fira Mono", monospace',
                 fontSize: 14,
+                whiteSpace: "pre",
                 outline: 0,
             }}
         />
