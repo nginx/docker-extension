@@ -72,16 +72,17 @@ export class ConfigurationParser {
 
             // Comment line
             // find Includes to get the filename
-            if (line.substring(0,1) === '#') {
+            if (line.substring(0, 1) === '#') {
                 if (line.match('# configuration file')) {
                     //get configuration file name.
-                    configurationFile = line.match("[^\\/]*$")? line.match("[^\\/]*$")![0] : ""
+                    configurationFile = line.match("[^\\/]*$") ? line.match("[^\\/]*$")![0] : ""
                     configurationFile = configurationFile.replace(":", "")
                     console.log(`Include File scope ${configurationFile}`)
                     return
                 }
-                    return
-                }
+                //Comment line - skip processing
+                return
+            }
 
             if (line.length === 1 && line.substring(line.length - 1) === '}') {
                 if (inLocationContext) {

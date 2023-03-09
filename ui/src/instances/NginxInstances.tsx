@@ -45,12 +45,11 @@ export function NginxInstance() {
     const [loading, setLoading] = useState<any>(true);
     const [configuration, setConfiguration] = useState<any>(undefined);
 
-
     const [errorClasses, setErrorClasses] = useState<any>({
         bannerBackground: "nginx-banner-neutral",
         bannerErrorMessage: "",
         backToDashboardDisabled: false,
-        undoChangesButtonDisabled: true,
+        undoChangesButtonDisabled: true
     });
 
     //new State Object - old stuff has to be refactored!
@@ -93,7 +92,7 @@ export function NginxInstance() {
     }
 
 
-    //Refactoring! Move this into a seperate component
+    //Refactoring! Move this into a separate component
     const [tabValue, setTabValue] = useState('1');
     const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
         setTabValue(newValue);

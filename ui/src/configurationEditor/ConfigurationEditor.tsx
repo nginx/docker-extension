@@ -18,6 +18,7 @@ import {Add, Close, FileDownload} from "@mui/icons-material";
 import {NewConfigurationFile} from "./NewConfigurationFile";
 import {createDockerDesktopClient} from "@docker/extension-api-client";
 import {Editor} from "../prism/Editor";
+import {Base64} from "js-base64";
 
 interface ConfigurationEditorProps {
     nginxInstance: any
@@ -69,7 +70,7 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
     }
     const saveConfigurationToFile: any = (file: string, containerId: string) => (event: any) => {
         //build dynamically from TextInput as B64.
-        const content = btoa(configurationFileContent)
+        const content = Base64.encode(configurationFileContent)
         instanceService.sendConfigurationToFile(file, containerId, content).then((data: any) => {
             //error handling here.
             instanceService.reloadNGINX(containerId).then((data: any) => {
@@ -101,7 +102,7 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
     };
     const undoChanges: any = () => {
         setCFContent(oldConfiguration)
-        const content = btoa(oldConfiguration)
+        const content = Base64.encode(oldConfiguration)
         instanceService.sendConfigurationToFile(fileName, props.nginxInstance.id, content).then((data: any) => {
             //error handling here.
             instanceService.reloadNGINX(props.nginxInstance.id).then((data: any) => {

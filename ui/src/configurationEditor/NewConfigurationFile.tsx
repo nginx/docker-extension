@@ -4,6 +4,7 @@ import {ConfigurationEditor} from "./ConfigurationEditor";
 import {Editor} from "../prism/Editor";
 import PublishIcon from "@mui/icons-material/Publish";
 import {InstancesService} from "../instances/InstancesService";
+import {Base64} from "js-base64";
 
 interface NewConfigurationFileProps {
     nginxInstance: any
@@ -16,7 +17,7 @@ export function NewConfigurationFile(props: NewConfigurationFileProps) {
     const [fileName, setFileName] = useState<any>("");
 
     const saveConfigurationToFile: any = () => {
-        const content = btoa(configurationFileContent)
+        const content = Base64.encode(configurationFileContent)
         props.instanceService.sendConfigurationToFile(`/etc/nginx/conf.d/${fileName}`, props.nginxInstance.id, content).then((data: any) => {
             props.instanceService.reloadNGINX(props.nginxInstance.id).then((data: any) => {
                 props.instanceService.displaySuccessMessage("Configuration successfully updated!");
