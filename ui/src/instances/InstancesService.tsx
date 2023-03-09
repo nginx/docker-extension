@@ -119,7 +119,6 @@ export class InstancesService {
             "exec",
             [containerId,
                 "/bin/sh", "-c", `"echo ${configurationB64} |base64 -d > ${file}"`]);
-        // If code == 0, success, else error while applying new configuration.
         return ret
     }
 
@@ -128,6 +127,8 @@ export class InstancesService {
             "exec",
             [containerId,
                 "/bin/sh", "-c", `"nginx -s reload"`]);
+        // create an stderr parser to create an actual error message from the stderr string.
+        console.log(ret)
         return ret
     }
 
