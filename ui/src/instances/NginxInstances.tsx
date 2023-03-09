@@ -15,13 +15,9 @@ import styled from "@emotion/styled";
 import "./Instance.css";
 
 import {
-    Unarchive,
-    Archive,
     ArrowBackIosNewOutlined,
-    Folder,
     DriveFileMove,
-    Store,
-    FileDownload
+    Store
 } from "@mui/icons-material";
 
 import DnsIcon from '@mui/icons-material/Dns';
@@ -31,6 +27,8 @@ import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
 import {ConfigurationUi} from "../configurationUI/ConfigurationUi";
 import {ConfigurationEditor} from "../configurationEditor/ConfigurationEditor";
+import {TemplateStore} from "../templateStore/TemplateStore";
+
 
 interface NginxInstances {
     id: string,
@@ -246,8 +244,8 @@ export function NginxInstance() {
                                 <Tabs value={tabValue} onChange={handleTabChange} aria-label="icon label tabs example">
                                     <Tab icon={<DnsIcon/>} label="Servers" value={"1"}/>
                                     <Tab icon={<BorderColorIcon/>} label="Configuration Editor" value={"2"}/>
-                                    <Tab icon={<Store/>} label="Templates Store" value={"3"}/>
-                                    <Tab icon={<FileDownload/>} label="Export Configuration" value={"4"}/>
+                                    <Tab icon={<Store />} label="Templates Store" value={"3"}/>
+                                    {/*<Tab icon={<FileDownload/>} label="Export Configuration" value={"4"}/>*/}
                                 </Tabs>
                             </Box>
                             <TabPanel value={"1"}>
@@ -257,7 +255,7 @@ export function NginxInstance() {
                                 <ConfigurationEditor nginxInstance={nginxInstance}/>
                             </TabPanel>
                             <TabPanel value={"3"}>
-                                <>Templates</>
+                                <TemplateStore />
                             </TabPanel>
                             <TabPanel value={"4"}>
                                 <>Exports</>

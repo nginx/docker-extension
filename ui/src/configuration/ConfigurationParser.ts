@@ -1,7 +1,8 @@
 interface ServerConfiguration {
     names: Array<any>,
     listeners: Array<any>
-    locations: Array<any>
+    locations: Array<any>,
+    file: string
 }
 
 interface NginxConfiguration {
@@ -16,8 +17,6 @@ export class ConfigurationParser {
     }
 
     parse(rawConfiguration: string): NginxConfiguration {
-
-        const indent = 4;
         let confArray = rawConfiguration.split('\n');
         // remove all empty lines from array
         confArray = confArray.filter(n => n)
@@ -29,8 +28,10 @@ export class ConfigurationParser {
         let inHttpContext = false;
         let inServerContext = false;
         let inLocationContext = false;
+        // save file context for later editing
+        let configurationFile = ""
 
-        let currentServerConfiguration: ServerConfiguration = {names: [], listeners: [], locations: []};
+        let currentServerConfiguration: ServerConfiguration = {names: [], listeners: [], locations: [], file: ""};
 
         let locationConfiguration = {'location': undefined, 'configuration': []}
         // New JSON-based Configuration.
@@ -69,8 +70,16 @@ export class ConfigurationParser {
                 }
             }
 
-            // Comment line - skip
+            // Comment line
+            // find Includes to get the filename
             if (line.substring(0,1) === '#') {
+                if (line.match('# configuration file')) {
+                    //get configuration file name.
+                    configurationFile = line.match("[^\\/]*$")? line.match("[^\\/]*$")![0] : ""
+                    configurationFile = configurationFile.replace(":", "")
+                    console.log(`Include File scope ${configurationFile}`)
+                    return
+                }
                     return
                 }
 
@@ -105,7 +114,7 @@ export class ConfigurationParser {
             if (line.match('server') && line.substring(line.length - 1) === '{') {
                 // Add new Server Object in Array.
                 console.log(`Begin of Server context`);
-                currentServerConfiguration = {'names': [], 'listeners': [], 'locations': []}
+                currentServerConfiguration = {'names': [], 'listeners': [], 'locations': [], 'file': configurationFile}
                 inServerContext = true
                 //?
                 inLocationContext = false

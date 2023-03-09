@@ -12,7 +12,7 @@ import {
     TableRow, Tooltip,
     Typography
 } from "@mui/material";
-import {Add, ArrowBackIosNewOutlined, PlusOne} from "@mui/icons-material";
+import {Add, ArrowBackIosNewOutlined, Close, PlusOne} from "@mui/icons-material";
 import {Location} from "./Location";
 import {Server} from "./Server";
 
@@ -107,7 +107,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                     alignItems: "flex-start"
                 }}
             >
-                <Button onClick={handleChangeServer}>Close</Button>
+                <Close onClick={handleChangeServer} sx={{cursor: 'pointer'}} />
                 <Server/>
             </Box>
         </Box>
@@ -142,7 +142,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                     alignItems: "flex-start"
                 }}
             >
-                <Button onClick={handleChangeLocation}>Close</Button>
+                <Close onClick={handleChangeLocation} sx={{cursor: 'pointer'}} />
                 <Location/>
             </Box>
         </Box>
@@ -167,6 +167,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                                     </IconButton>
                                 </Tooltip>
                             </TableCell>
+                            <TableCell>Configuration File</TableCell>
                             <TableCell align="right">Ports</TableCell>
                             <TableCell align="right">Locations</TableCell>
                         </TableRow>
@@ -180,6 +181,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                                 <TableCell component="th" scope="row">
                                     {server.names.join(',')}
                                 </TableCell>
+                                <TableCell><Chip label={server.file} variant={"outlined"}/></TableCell>
                                 <TableCell align="right">
                                     {server.listeners.map((listener: any, index: number) => (
                                         <Chip key={index} label={listener} variant="outlined"/>
