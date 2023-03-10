@@ -5,6 +5,7 @@ import {
     Container,
     Grid,
     IconButton,
+    Tab,
     Tabs,
     Tooltip,
     ThemeProvider,
@@ -16,13 +17,11 @@ import "./Instance.css";
 
 import {
     ArrowBackIosNewOutlined,
-    DriveFileMove,
     Store
 } from "@mui/icons-material";
 
 import DnsIcon from '@mui/icons-material/Dns';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
 import {ConfigurationUi} from "../configurationUI/ConfigurationUi";
@@ -140,40 +139,20 @@ export function NginxInstance() {
         },
     });
 
-    const containerNetwork: any = (port: any) => {
+    const containerNetwork: any = (port: any, key: number) => {
         if (port.PrivatePort && port.PublicPort) {
             return (
-                <Box paddingTop={2}>
-                    <Tooltip title={`${port.IP}:${port.PublicPort}:${port.PrivatePort}`}>
-                        <span>{port.PublicPort}:{port.PrivatePort}</span>
-                    </Tooltip>
-                </Box>
+                <Tooltip title={`${port.IP}:${port.PublicPort}:${port.PrivatePort}`} key={key}>
+                    <Typography variant="body1" display="inline">{port.PublicPort}:{port.PrivatePort} </Typography>
+                </Tooltip>
             )
         }
         if (port.PrivatePort && !port.PublicPort) {
             return (
-                <Box paddingTop={2}>
-                    <Tooltip title={port.PrivatePort}>
-                        <span>:{port.PrivatePort}</span>
-                    </Tooltip>
-                </Box>
+                <Tooltip title={port.PrivatePort} key={key}>
+                    <Typography variant="body1" display="inline">unbound:{port.PrivatePort} </Typography>
+                </Tooltip>
             )
-        }
-    }
-
-    /*
-    * Render the Mount-Points of a given Container
-    * */
-    const containerMount: any = (mounts: any) => {
-        if (mounts.length >= 1) {
-            return (<Box>
-                <IconButton>
-                    <DriveFileMove/>
-                </IconButton>
-                Volumes mounted: {mounts.length}
-            </Box>)
-        } else {
-            return ""
         }
     }
 
@@ -188,81 +167,93 @@ export function NginxInstance() {
     }
 
     return (
-        <Container sx={{m: 1}}>
-            {!loading ? (
-                !nginxInstance.id ? (
-                    <ThemeProvider theme={listTheme}>
-                        <Typography variant="subtitle2">Active containers running NGINX</Typography>
-                        <Grid container> {
-                            instances.map((inst: any, key: number) => (
-                                //Refactoring Component Instance
-                                <Grid item sm={6} lg={4} key={key}>
-                                    <Box className={"ngx-instance"} borderRadius={1} boxShadow={5} margin={2}
-                                         padding={2}
-                                         border={"1px solid gray"}
-                                         onClick={nginxInstanceOnClickHandler(inst.id, inst.name)}>
-                                        <Typography variant="h3">{inst.name}</Typography>
-                                        <Typography variant="subtitle2">Container
-                                            ID: {inst.id.substring(0, 8)}...</Typography>
-                                        <Typography variant="body1"
-                                                    paddingTop={1}>Status: {inst.status.toLowerCase()}</Typography>
-                                        <Typography variant="body1">NGINX
-                                            Version: {inst.out.substring(15, inst.out.length)}</Typography>
-                                        {inst.ports.map((port: any, key: number) => (
-                                            <Box key={key}>
-                                                {containerNetwork(port)}
-                                            </Box>
-                                        ))}
-                                        {containerMount(inst.mounts)}
-                                    </Box>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </ThemeProvider>) : (
-                    <Container>
-                        <Grid className={errorClasses.bannerBackground}>
-                            <Typography variant={"h3"} paddingTop={2}>
-                                <Tooltip title="Back to Instances Overview">
-                                    <IconButton className={"ngx-back-button"} onClick={() => {
-                                        setContainerId(undefined)
-                                        setNginxInstance({id: "", name: "", mounts: []})
-                                    }} disabled={errorClasses.backToDashboardDisabled}>
-                                        <ArrowBackIosNewOutlined/>
-                                    </IconButton>
-                                </Tooltip>
-                                {nginxInstance.name}
-                            </Typography>
-                            <Typography variant={"inherit"} paddingLeft={5} paddingBottom={2}>
-                                Container-ID: {nginxInstance.id}
-                            </Typography>
-                            {renderErrorMessageIfAny()}
-                        </Grid>
-
-                        <TabContext value={tabValue}>
+        <Box sx={{m: 1}}>
+            <ThemeProvider theme={listTheme}>
+                {!loading ? (
+                    !nginxInstance.id ? (
                             <Box>
-                                <Tabs value={tabValue} onChange={handleTabChange} aria-label="icon label tabs example">
-                                    <Tab icon={<DnsIcon/>} label="Servers" value={"1"}/>
-                                    <Tab icon={<BorderColorIcon/>} label="Configuration Editor" value={"2"}/>
-                                    <Tab icon={<Store />} label="Templates Store" value={"3"}/>
-                                    {/*<Tab icon={<FileDownload/>} label="Export Configuration" value={"4"}/>*/}
-                                </Tabs>
+                                <Typography variant="subtitle2">Active containers running NGINX</Typography>
+                                <Grid container> {
+                                    instances.map((inst: any, key: number) => (
+                                        //Refactoring Component Instance
+                                        <Grid item sm={6} lg={4} key={key}>
+                                            <Box className={"ngx-instance"} borderRadius={1} boxShadow={10} margin={2}
+                                                padding={2}
+                                                background-color={"red"}
+                                                border={"1px solid rgba(255,255,255,.2)"}
+                                                onClick={nginxInstanceOnClickHandler(inst.id, inst.name)}>
+                                                <Typography variant="h5">{inst.name}</Typography>
+                                                <Typography variant="subtitle2" display="inline">Container ID: </Typography>
+                                                <Typography variant="body1" display="inline">{inst.id.substring(0, 8)}...</Typography>
+                                                <Box paddingTop={1}>
+                                                    <Typography variant="subtitle2" display="inline">Status: </Typography>
+                                                    <Typography variant="body1" display="inline">{inst.status.toLowerCase()}</Typography>
+                                                </Box>
+                                                <Box>
+                                                    <Typography variant="subtitle2" display="inline">NGINX Version: </Typography>
+                                                    <Typography variant="body1" display="inline">{inst.out.substring(15, inst.out.length)}</Typography>
+                                                </Box>
+                                                <Box>
+                                                    <Typography variant="subtitle2" display="inline">Open Ports (Host:Container): </Typography>
+                                                    {inst.ports.map((port: any, key: number) => containerNetwork(port, key))}
+                                                </Box>
+                                                {inst.mounts.length > 0 ? (
+                                                    <Box>
+                                                        <Typography variant="subtitle2" display="inline">Number of Mounted Volumes: </Typography>
+                                                        <Typography variant="body1" display="inline">{inst.mounts.length}</Typography>
+                                                    </Box>
+                                                ) : ("")}
+                                            </Box>
+                                        </Grid>
+                                    ))}
+                                </Grid>
                             </Box>
-                            <TabPanel value={"1"}>
-                                <ConfigurationUi containerId={nginxInstance.id} nginxInstance={nginxInstance}/>
-                            </TabPanel>
-                            <TabPanel value={"2"}>
-                                <ConfigurationEditor nginxInstance={nginxInstance}/>
-                            </TabPanel>
-                            <TabPanel value={"3"}>
-                                <TemplateStore />
-                            </TabPanel>
-                            <TabPanel value={"4"}>
-                                <>Exports</>
-                            </TabPanel>
-                        </TabContext>
-                    </Container>
-                )
-            ) : (<Typography variant='h3'>Loading...</Typography>)}
-        </Container>
+                        ) : (
+                        <Box>
+                            <Grid className={errorClasses.bannerBackground}>
+                                <Typography variant={"h3"} paddingTop={2}>
+                                    <Tooltip title="Back to Instances Overview">
+                                        <IconButton className={"ngx-back-button"} onClick={() => {
+                                            setContainerId(undefined)
+                                            setNginxInstance({id: "", name: "", mounts: []})
+                                        }} disabled={errorClasses.backToDashboardDisabled}>
+                                            <ArrowBackIosNewOutlined/>
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Typography variant="h5" display="inline">{nginxInstance.name}</Typography>
+                                </Typography>
+                                <Typography variant={"inherit"} paddingLeft={5} paddingBottom={2}>
+                                    Container ID: {nginxInstance.id.substring(0, 8)}...
+                                </Typography>
+                                {renderErrorMessageIfAny()}
+                            </Grid>
+
+                            <TabContext value={tabValue}>
+                                <Box>
+                                    <Tabs value={tabValue} onChange={handleTabChange} aria-label="icon label tabs example">
+                                        <Tab icon={<DnsIcon/>} label="Servers" value={"1"}/>
+                                        <Tab icon={<BorderColorIcon/>} label="Configuration Editor" value={"2"}/>
+                                        <Tab icon={<Store />} label="Templates Store" value={"3"}/>
+                                        {/*<Tab icon={<FileDownload/>} label="Export Configuration" value={"4"}/>*/}
+                                    </Tabs>
+                                </Box>
+                                <TabPanel value={"1"}>
+                                    <ConfigurationUi containerId={nginxInstance.id} nginxInstance={nginxInstance}/>
+                                </TabPanel>
+                                <TabPanel value={"2"}>
+                                    <ConfigurationEditor nginxInstance={nginxInstance}/>
+                                </TabPanel>
+                                <TabPanel value={"3"}>
+                                    <TemplateStore />
+                                </TabPanel>
+                                <TabPanel value={"4"}>
+                                    <>Exports</>
+                                </TabPanel>
+                            </TabContext>
+                        </Box>
+                    )
+                ) : (<Typography variant='h3'>Loading...</Typography>)}
+            </ThemeProvider>
+        </Box>
     );
 }

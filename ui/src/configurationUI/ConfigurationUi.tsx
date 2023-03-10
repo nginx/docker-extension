@@ -1,15 +1,18 @@
 import React, {useEffect, useState} from "react";
 import {ConfigurationUiService} from "./ConfigurationUiService";
 import {
-    Box, Button,
-    Chip, IconButton,
-    Paper, Slide,
+    Box,
+    Chip,
+    IconButton,
+    Paper,
+    Slide,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, Tooltip,
+    TableRow,
+    Tooltip,
     Typography
 } from "@mui/material";
 import {Add, ArrowBackIosNewOutlined, Close, PlusOne} from "@mui/icons-material";
@@ -39,13 +42,12 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
         console.log(props.nginxInstance);
         if (props.nginxInstance.mounts.length > 0) {
             return (
-                <>
-                    <Typography variant={"h3"}>Mounts</Typography>
+                <Box paddingTop={1}>
+                    <Typography variant={"h5"} paddingBottom={1}>Mounted Volumes</Typography>
                     <TableContainer component={Paper}>
                         <Table sx={{minWidth: 650}} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Mount-Point</TableCell>
                                     <TableCell align="right">Type</TableCell>
                                     <TableCell align="right">Source</TableCell>
                                     <TableCell align="right">Destination</TableCell>
@@ -57,8 +59,6 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                                         key={index}
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
-                                        <TableCell component="th" scope="row">
-                                        </TableCell>
                                         <TableCell align="right">
                                             {mount.Type}
                                         </TableCell>
@@ -73,7 +73,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </>
+                </Box>
             )
         }
     }

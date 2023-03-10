@@ -2,17 +2,18 @@ import {
     Box,
     Button,
     FormControl,
-    Grid, IconButton,
+    Grid,
     InputLabel,
     MenuItem,
     Select,
-    SelectChangeEvent, Slide, Tooltip,
+    SelectChangeEvent, 
+    Slide,
     Typography
 } from "@mui/material";
 import DataObjectIcon from "@mui/icons-material/DataObject";
 import PublishIcon from "@mui/icons-material/Publish";
 import UndoIcon from "@mui/icons-material/Undo";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {InstancesService} from "../instances/InstancesService";
 import {Add, Close, FileDownload} from "@mui/icons-material";
 import {NewConfigurationFile} from "./NewConfigurationFile";
@@ -168,7 +169,7 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
     }
 
     return (
-        <>
+        <Box>
             <Slide direction="left" in={newConfigurationFileSlide} mountOnEnter unmountOnExit>
                 {content}
             </Slide>
@@ -192,10 +193,10 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
             {!configurationFileContent ? (
                 <Grid container>
                     <Grid item marginX={"auto"} marginY={10} textAlign={"center"}>
-                        <Box display={"flex"} alignItems={"center"}>
-                            <DataObjectIcon style={{marginRight: "1rem", fontSize: "4rem"}}/>
-                            <Typography variant={"h2"}>
-                                No Configuration File selected! Please select one.
+                        <Box display={"flex"} alignItems={"center"} marginBottom={1}>
+                            <DataObjectIcon style={{marginRight: "1rem", fontSize: "2rem"}}/>
+                            <Typography variant={"h5"}>
+                                Please select a configuration file
                             </Typography>
                         </Box>
                         <Button variant="contained" color={"success"} onClick={handleNewConfigurationFileSlide}
@@ -233,6 +234,6 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
                     </Grid>
                 </Grid>
             )}
-        </>
+        </Box>
     )
 }
