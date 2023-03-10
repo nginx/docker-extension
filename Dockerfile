@@ -19,6 +19,7 @@ LABEL org.opencontainers.image.title="NGINX Docker Desktop Extension" \
     com.docker.extension.detailed-description="" \
     com.docker.extension.publisher-url="" \
     com.docker.extension.additional-urls="" \
+    com.docker.extension.categories="utility-tools" \
     com.docker.extension.changelog=""
 
 COPY metadata.json .
