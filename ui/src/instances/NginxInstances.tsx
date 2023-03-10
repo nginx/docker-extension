@@ -2,7 +2,6 @@ import React, {MouseEventHandler, useEffect, useState} from 'react';
 import {InstancesService} from "./InstancesService";
 import {
     Box,
-    Container,
     Grid,
     IconButton,
     Tab,
@@ -10,7 +9,7 @@ import {
     Tooltip,
     ThemeProvider,
     Typography,
-    createTheme
+    createTheme,
 } from "@mui/material";
 import styled from "@emotion/styled";
 import "./Instance.css";

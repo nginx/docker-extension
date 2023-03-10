@@ -15,7 +15,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import {Add, ArrowBackIosNewOutlined, Close, PlusOne} from "@mui/icons-material";
+import {Add, Close} from "@mui/icons-material";
 import {Location} from "./Location";
 import {Server} from "./Server";
 
@@ -101,7 +101,8 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                     display: "flex",
                     width: "75%",
                     height: "100vh",
-                    borderLeft: "2px solid blue",
+                    borderLeft: "1px solid eee",
+                    boxShadow: "-3px 0px 5px rgb(0 0 0 / 20%)",
                     flexDirection: "column",
                     backgroundColor: "rgba(255,255,255,1)",
                     alignItems: "flex-start"
