@@ -222,7 +222,7 @@ export function NginxInstance() {
                                     <Typography variant="h5" display="inline">{nginxInstance.name}</Typography>
                                 </Typography>
                                 <Typography variant={"inherit"} paddingLeft={5} paddingBottom={2}>
-                                    Container ID: {nginxInstance.id.substring(0, 8)}...
+                                    Container ID: {nginxInstance.id.substring(0, 12)}
                                 </Typography>
                                 {renderErrorMessageIfAny()}
                             </Grid>
