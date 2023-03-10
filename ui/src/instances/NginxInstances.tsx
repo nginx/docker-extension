@@ -183,7 +183,7 @@ export function NginxInstance() {
                                                 onClick={nginxInstanceOnClickHandler(inst.id, inst.name)}>
                                                 <Typography variant="h5">{inst.name}</Typography>
                                                 <Typography variant="subtitle2" display="inline">Container ID: </Typography>
-                                                <Typography variant="body1" display="inline">{inst.id.substring(0, 8)}...</Typography>
+                                                <Typography variant="body1" display="inline">{inst.id.substring(0, 12)}</Typography>
                                                 <Box paddingTop={1}>
                                                     <Typography variant="subtitle2" display="inline">Status: </Typography>
                                                     <Typography variant="body1" display="inline">{inst.status.toLowerCase()}</Typography>
