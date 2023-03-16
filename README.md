@@ -7,33 +7,37 @@ The NGINX Docker Desktop Extension can be used to manage the instance configurat
 ## Development
 Before we can interactively develop the Extensions frontend, it must be installed first.
 
-To build the extension locally.
+To build the extension locally -
 ```shell
 docker build -t nginx/nginx-dd-extension .
 ```
-To install the extension
+To install the extension -
 ```shell
 docker extension install nginx/nginx-dd-extension
 ```
 
-To remove the extension
+To remove the extension -
 ```shell
 docker remove nginx/nginx-dd-extension
 ```
 ## Release
 
-```shell
-docker buildx build --push --no-cache --platform=linux/amd64,linux/arm64 -t nginx/nginx-docker-extension:0.0.1 .
+Use the provided Makefile to cross-compile and push an image that supports amd64 and arm64 architectures -
+
+```
+IMAGE=dockerhubid/nginx-dd-extension TAG=latest make push-extension
 ```
 
 ### Start Docker Extension Development Server
-1. start the UI node server in the `ui` directory. Make sure you install the dev dependencies at the first.
+1. start the UI node server in the `ui` directory. Make sure you install the dev dependencies first -
+
 ```shell
 npm install
 npm run dev
 ```
 
-2. enable debugging for the NGINX Docker Extension.
+2. enable debugging for the NGINX Docker Extension -
+
 ```shell
 docker extension dev debug nginx/nginx-dd-extension 
 ```
