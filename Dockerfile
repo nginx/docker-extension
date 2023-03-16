@@ -11,16 +11,17 @@ COPY ui /ui
 RUN npm run build
 
 FROM alpine
-LABEL org.opencontainers.image.title="NGINX Docker Desktop Extension" \
-    org.opencontainers.image.description="NGINXs Docker Desktop Extension" \
+LABEL org.opencontainers.image.title="NGINX Development Center" \
+    org.opencontainers.image.description="NGINX Development Center for Docker Desktop" \
     org.opencontainers.image.vendor="NGINX Inc." \
     com.docker.desktop.extension.api.version="0.3.3" \
-    com.docker.extension.screenshots="" \
-    com.docker.extension.detailed-description="" \
+    com.docker.extension.screenshots='[{"alt":"NGINX Docker Development Center", "url":"https://raw.githubusercontent.com/nginx/docker-extension/main/docs/NGINX-dd-extension.png"}]' \
+    com.docker.desktop.extension.icon="https://raw.githubusercontent.com/nginx/docker-extension/main/logo.svg"\
+    com.docker.extension.detailed-description="With the NGINX Docker Development Center you are able to configure your running NGINX Docker Instances." \
     com.docker.extension.publisher-url="https://nginx.org/" \
-    com.docker.extension.additional-urls="" \
+    com.docker.extension.additional-urls="https://nginx.com/" \
     com.docker.extension.categories="utility-tools" \
-    com.docker.extension.changelog="Inital Version"
+    com.docker.extension.changelog="Initial Release"
 
 COPY metadata.json .
 COPY logo.svg .

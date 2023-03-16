@@ -7,7 +7,7 @@ The NGINX Docker Desktop Extension can be used to manage the instance configurat
 ## Development
 Before we can interactively develop the Extensions frontend, it must be installed first.
 
-To build the extension
+To build the extension locally.
 ```shell
 docker build -t nginx/nginx-dd-extension .
 ```
@@ -19,6 +19,11 @@ docker extension install nginx/nginx-dd-extension
 To remove the extension
 ```shell
 docker remove nginx/nginx-dd-extension
+```
+## Release
+
+```shell
+docker buildx build --push --no-cache --platform=linux/amd64,linux/arm64 -t nginx/nginx-docker-extension:0.0.1 .
 ```
 
 ### Start Docker Extension Development Server
