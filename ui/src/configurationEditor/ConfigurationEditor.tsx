@@ -216,10 +216,10 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
                         <Button variant={"outlined"} startIcon={<PublishIcon/>}
                                 onClick={saveConfigurationToFile(fileName, props.nginxInstance.id)}
                                 style={{marginLeft: "0.5rem"}}>Publish</Button>
-                        <Button variant={"outlined"} startIcon={<FileDownload/>}
-                                style={{marginLeft: "0.5rem"}}
-                                onClick={handleExportConfigurationFile}
-                        >Export File</Button>
+                        {/*<Button variant={"outlined"} startIcon={<FileDownload/>}*/}
+                        {/*        style={{marginLeft: "0.5rem"}}*/}
+                        {/*        onClick={handleExportConfigurationFile}*/}
+                        {/*>Export File</Button>*/}
                         <Button variant={"outlined"} startIcon={<UndoIcon/>}
                                 onClick={undoChanges}
                                 color={"error"}

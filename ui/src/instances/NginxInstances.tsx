@@ -232,7 +232,7 @@ export function NginxInstance() {
                                     <Tabs value={tabValue} onChange={handleTabChange} aria-label="icon label tabs example">
                                         <Tab icon={<DnsIcon/>} label="Servers" value={"1"}/>
                                         <Tab icon={<BorderColorIcon/>} label="Configuration Editor" value={"2"}/>
-                                        <Tab icon={<Store />} label="Templates Store" value={"3"}/>
+                                        {/*<Tab icon={<Store />} label="Templates Store" value={"3"}/>*/}
                                         {/*<Tab icon={<FileDownload/>} label="Export Configuration" value={"4"}/>*/}
                                     </Tabs>
                                 </Box>

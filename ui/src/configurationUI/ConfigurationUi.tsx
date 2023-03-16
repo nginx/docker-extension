@@ -162,11 +162,11 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                     <TableHead>
                         <TableRow>
                             <TableCell>Server
-                                <Tooltip title="New Virtual Server">
-                                    <IconButton onClick={handleChangeServer} sx={{fontSize:"0.9rem"}}>
-                                        <Add/>
-                                    </IconButton>
-                                </Tooltip>
+                                {/*<Tooltip title="New Virtual Server">*/}
+                                {/*    <IconButton onClick={handleChangeServer} sx={{fontSize:"0.9rem"}}>*/}
+                                {/*        <Add/>*/}
+                                {/*    </IconButton>*/}
+                                {/*</Tooltip>*/}
                             </TableCell>
                             <TableCell>Configuration File</TableCell>
                             <TableCell align="right">Ports</TableCell>
@@ -192,11 +192,11 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                                     {server.locations.map((location: any, index: number) => (
                                         <Chip key={index} label={location.location} variant="outlined" sx={{textTransform: "inherit"}} />
                                     ))}
-                                    <Tooltip title="Add New Location">
-                                        <IconButton className={"ngx-back-button"} onClick={handleChangeLocation} sx={{fontSize:"0.9rem"}}>
-                                            <Add/>
-                                        </IconButton>
-                                    </Tooltip>
+                                    {/*<Tooltip title="Add New Location">*/}
+                                    {/*    <IconButton className={"ngx-back-button"} onClick={handleChangeLocation} sx={{fontSize:"0.9rem"}}>*/}
+                                    {/*        <Add/>*/}
+                                    {/*    </IconButton>*/}
+                                    {/*</Tooltip>*/}
                                 </TableCell>
                             </TableRow>
                         ))}
