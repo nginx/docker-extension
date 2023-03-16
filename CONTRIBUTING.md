@@ -59,7 +59,7 @@ issue first to start a discussion about the feature.
 
 - Limit the subject line to 67 characters, and the rest of the commit message
   to 80 characters
-- 
+
 - Reference issues and PRs liberally after the subject line; if the commit
   remedies a GitHub issue, [name
   it](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)
