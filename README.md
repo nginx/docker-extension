@@ -1,5 +1,6 @@
 # NGINX Docker Desktop Extension
 
+The NGINX Docker Desktop Extension can be used to manage the instance configuration of a running NGINX container.
 
 ## Development
 Before we can interactively develop the Extensions frontend, it must be installed first.
@@ -33,6 +34,18 @@ docker extension dev debug nginx/nginx-dd-extension
 ```shell
 docker extension dev ui-source nginx/nginx-dd-extension http://localhost:3000 
 ```
+## Community
+
+- The go-to place to start asking questions and share your thoughts is
+  our [Slack channel](https://community.nginx.org/joinslack).
+
+- Get involved with the project by contributing! See the
+  [contributing guide](CONTRIBUTING.md) for details.
+
+- For security issues, [email us](security-alert@nginx.org), mentioning
+  NGINX Unit in the subject and following the [CVSS
+  v3.1](https://www.first.org/cvss/v3.1/specification-document) spec.
+
 
 ## Backlog
 
