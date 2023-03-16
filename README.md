@@ -1,5 +1,7 @@
 # NGINX Docker Desktop Extension
 
+![NGINX Docker Extension Instance Screen](docs/NGINX-dd-extension.png)
+
 The NGINX Docker Desktop Extension can be used to manage the instance configuration of a running NGINX container.
 
 ## Development

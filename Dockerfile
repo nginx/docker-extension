@@ -17,10 +17,10 @@ LABEL org.opencontainers.image.title="NGINX Docker Desktop Extension" \
     com.docker.desktop.extension.api.version="0.3.3" \
     com.docker.extension.screenshots="" \
     com.docker.extension.detailed-description="" \
-    com.docker.extension.publisher-url="" \
+    com.docker.extension.publisher-url="https://nginx.org/" \
     com.docker.extension.additional-urls="" \
     com.docker.extension.categories="utility-tools" \
-    com.docker.extension.changelog=""
+    com.docker.extension.changelog="Inital Version"
 
 COPY metadata.json .
 COPY logo.svg .
