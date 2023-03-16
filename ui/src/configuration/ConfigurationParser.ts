@@ -65,7 +65,6 @@ export class ConfigurationParser {
 
                 // Get the context to know where to push the configuration to.
                 if (inLocationContext) {
-                    console.log(obj);
                     currentServerConfiguration.locations[index].configuration.push(obj)
                 }
             }
@@ -77,7 +76,6 @@ export class ConfigurationParser {
                     //get configuration file name.
                     configurationFile = line.match("[^\\/]*$") ? line.match("[^\\/]*$")![0] : ""
                     configurationFile = configurationFile.replace(":", "")
-                    console.log(`Include File scope ${configurationFile}`)
                     return
                 }
                 //Comment line - skip processing
@@ -86,14 +84,12 @@ export class ConfigurationParser {
 
             if (line.length === 1 && line.substring(line.length - 1) === '}') {
                 if (inLocationContext) {
-                    console.log(`Closing Location configuration block`)
                     inLocationContext = false
                     //reset array index
                     return
                 }
 
                 if (inServerContext) {
-                    console.log(`Closing Server configuration block`)
                     inServerContext = false
                     configuration.http.servers.push(currentServerConfiguration)
                     index = -1;
@@ -102,19 +98,16 @@ export class ConfigurationParser {
             }
             // special one liner treatment! ::)
             if (line.length > 1 && line.substring(line.length - 1) === '}') {
-                console.log(`One-Liner: need special handling ${line}`);
                 return
             }
             // Let's check for http-context.
             if (line.match('http') && line.substring(line.length - 1) === '{') {
                 inHttpContext = true
-                console.log("In Http Context! Welcome! Adding new level");
                 return
             }
 
             if (line.match('server') && line.substring(line.length - 1) === '{') {
                 // Add new Server Object in Array.
-                console.log(`Begin of Server context`);
                 currentServerConfiguration = {'names': [], 'listeners': [], 'locations': [], 'file': configurationFile}
                 inServerContext = true
                 //?
@@ -124,20 +117,17 @@ export class ConfigurationParser {
 
             if (line.match('listen')) {
                 // Listeners found: Configuration:
-                console.log(line.split(' ').filter(n => n));
                 currentServerConfiguration.listeners.push(line.split(' ').filter(n => n)[1])
 
             }
 
             if (line.match('server_name')) {
                 // Server Name found: Add to server names array:
-                console.log(line.split(' ').filter(n => n));
                 currentServerConfiguration.names.push(line.split(' ').filter(n => n)[1])
 
             }
 
             if (line.match('location') && line.substring(line.length - 1) === '{') {
-                console.log("In location context");
 
                 inLocationContext = true;
                 let location = line.split(' ').filter(n => n);
@@ -146,12 +136,10 @@ export class ConfigurationParser {
                     'configuration': []
                 })
                 //increment index.
-                console.log(currentServerConfiguration.locations)
                 index += 1
                 return
             }
         })
-        console.log(configuration)
         return configuration
     }
 }

@@ -123,13 +123,10 @@ export class InstancesService {
     }
 
     async reloadNGINX(containerId: string): Promise<any> {
-        const ret = await this.ddClient.docker.cli.exec(
+        return await this.ddClient.docker.cli.exec(
             "exec",
             [containerId,
                 "/bin/sh", "-c", `"nginx -s reload"`]);
-        // create an stderr parser to create an actual error message from the stderr string.
-        console.log(ret)
-        return ret
     }
 
     displaySuccessMessage(message: string): void {

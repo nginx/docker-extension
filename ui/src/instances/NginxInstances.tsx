@@ -210,7 +210,7 @@ export function NginxInstance() {
                         ) : (
                         <Box>
                             <Grid className={errorClasses.bannerBackground}>
-                                <Typography variant={"h3"} paddingTop={2}>
+                                <Typography paddingTop={2}>
                                     <Tooltip title="Back to Instances Overview">
                                         <IconButton className={"ngx-back-button"} onClick={() => {
                                             setContainerId(undefined)

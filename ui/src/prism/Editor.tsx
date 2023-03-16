@@ -16,7 +16,6 @@ interface EditorProps {
 
 export function Editor(props: EditorProps) {
     const handleChange = (value: string) => {
-        console.log(value)
         props.setConfigurationFileContent(value)
     }
 

@@ -39,7 +39,6 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
     }, []);
 
     const renderMountsIfAny: any = () => {
-        console.log(props.nginxInstance);
         if (props.nginxInstance.mounts.length > 0) {
             return (
                 <Box paddingTop={1}>
