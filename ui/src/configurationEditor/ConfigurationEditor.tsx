@@ -131,7 +131,7 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
     };
 
     const content = (
-        <Box
+        <Grid
             sx={{width: "100%", height: "100vh"}}
             style={{
                 position: "absolute",
@@ -143,21 +143,20 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
                 backgroundColor: "transparent"
             }}
         >
-            <Box
+            <Grid
                 style={{
                     display: "flex",
                     width: "75%",
                     height: "100vh",
-                    borderLeft: "2px solid blue",
                     flexDirection: "column",
-                    backgroundColor: "rgba(255,255,255,1)",
                     alignItems: "flex-start"
                 }}
+                sx={{backgroundColor: "background.default",  borderLeft: "2px solid", borderColor: "primary.dark"}}
             >
                 <Close onClick={handleNewConfigurationFileSlide} sx={{cursor: 'pointer'}} />
                 <NewConfigurationFile nginxInstance={props.nginxInstance} instanceService={instanceService}/>
-            </Box>
-        </Box>
+            </Grid>
+        </Grid>
     );
 
     const handleExportConfigurationFile = async () => {

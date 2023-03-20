@@ -43,7 +43,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
             return (
                 <Box paddingTop={1}>
                     <Typography variant={"h5"} paddingBottom={1}>Mounted Volumes</Typography>
-                    <TableContainer component={Paper}>
+                    <TableContainer>
                         <Table sx={{minWidth: 650}} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
@@ -103,7 +103,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                     borderLeft: "1px solid eee",
                     boxShadow: "-3px 0px 5px rgb(0 0 0 / 20%)",
                     flexDirection: "column",
-                    backgroundColor: "rgba(255,255,255,1)",
+                    backgroundColor: "primary.light",
                     alignItems: "flex-start"
                 }}
             >
@@ -138,7 +138,7 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                     height: "100vh",
                     borderLeft: "2px solid blue",
                     flexDirection: "column",
-                    backgroundColor: "rgba(255,255,255,1)",
+                    backgroundColor: "primary.light",
                     alignItems: "flex-start"
                 }}
             >
@@ -156,11 +156,11 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
             <Slide direction="left" in={locationSlide} mountOnEnter unmountOnExit>
                 {contentLocation}
             </Slide>
-            <TableContainer component={Paper}>
-                <Table sx={{minWidth: 650}} aria-label="simple table">
+            <TableContainer>
+                <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Server
+                            <TableCell color="text.secondary">Server
                                 {/*<Tooltip title="New Virtual Server">*/}
                                 {/*    <IconButton onClick={handleChangeServer} sx={{fontSize:"0.9rem"}}>*/}
                                 {/*        <Add/>*/}

@@ -4,7 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import {DockerMuiThemeProvider} from "@docker/docker-mui-theme";
 
 import {App} from './App';
-import {createTheme, ThemeProvider, useTheme} from "@mui/material";
+import {ThemeProvider, useTheme} from "@mui/material";
 
 const CustomThemeProvider = ({ children }: any) => {
     const theme = useTheme();

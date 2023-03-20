@@ -19,13 +19,15 @@ export function Editor(props: EditorProps) {
         props.setConfigurationFileContent(value)
     }
 
+    const placeholderText = "# ********************************************\n# NGINX Configuration Editor \n# Please write your configuration here\n# Feel free to remove this comment\n# ********************************************"
+
     return (
         <ReactEditor
-            value={props.fileContent}
+            value={props.fileContent ? props.fileContent : placeholderText}
             className={"nginx-config-editor"}
             onValueChange={handleChange}
             highlight={
-                configurationFileContent => highlight(props.fileContent, languages.nginx, "bash")
+                configurationFileContent => highlight(props.fileContent ? props.fileContent : placeholderText, languages.nginx, "bash")
                     .split("\n")
                     .map((line, i) => `<span class='editorLineNumber' key=${i}>${i + 1}</span>${line}`)
                     .join('\n')

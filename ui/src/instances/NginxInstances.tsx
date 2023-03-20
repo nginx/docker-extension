@@ -96,48 +96,6 @@ export function NginxInstance() {
         setTabValue(newValue);
     };
 
-    const Pre = styled.pre`
-      text-align: left;
-      margin: 1em 0;
-      padding: 0.5em;
-      overflow: scroll;
-    `;
-
-    const Line = styled.div`
-      display: table-row;
-    `;
-
-    const LineNo = styled.span`
-      display: table-cell;
-      text-align: right;
-      padding-right: 1em;
-      user-select: none;
-      opacity: 0.5;
-    `;
-
-    const LineContent = styled.span`
-      display: table-cell;
-    `;
-
-    const listTheme = createTheme({
-        typography: {
-            h3: {
-                fontSize: 30,
-            },
-            subtitle2: {
-                fontSize: 13,
-                opacity: .6,
-                overflow: 'hidden',
-            },
-            body1: {
-                fontWeight: 400,
-            },
-            body2: {
-                fontWeight: 600,
-            },
-        },
-    });
-
     const containerNetwork: any = (port: any, key: number) => {
         if (port.PrivatePort && port.PublicPort) {
             return (
@@ -167,7 +125,6 @@ export function NginxInstance() {
 
     return (
         <Box sx={{m: 1}}>
-            <ThemeProvider theme={listTheme}>
                 {!loading ? (
                     !nginxInstance.id ? (
                             <Box>
@@ -252,7 +209,6 @@ export function NginxInstance() {
                         </Box>
                     )
                 ) : (<Typography variant='h3'>Loading...</Typography>)}
-            </ThemeProvider>
         </Box>
     );
 }

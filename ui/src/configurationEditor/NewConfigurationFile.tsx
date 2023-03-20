@@ -18,6 +18,12 @@ export function NewConfigurationFile(props: NewConfigurationFileProps) {
 
     const saveConfigurationToFile: any = () => {
         const content = Base64.encode(configurationFileContent)
+
+        if (!fileName) {
+            props.instanceService.displayErrorMessage(`Filename can not be empty!`);
+            return;
+        }
+
         props.instanceService.sendConfigurationToFile(`/etc/nginx/conf.d/${fileName}`, props.nginxInstance.id, content).then((data: any) => {
             props.instanceService.reloadNGINX(props.nginxInstance.id).then((data: any) => {
                 props.instanceService.displaySuccessMessage("Configuration successfully updated!");
@@ -47,7 +53,7 @@ export function NewConfigurationFile(props: NewConfigurationFileProps) {
                     style={{minHeight: "20rem"}}
             />
             <Box>
-                <Button variant={"outlined"} startIcon={<PublishIcon/>}
+                <Button variant={"contained"} startIcon={<PublishIcon/>}
                         onClick={saveConfigurationToFile}
                         style={{marginLeft: "0.5rem"}}>Publish</Button>
             </Box>
