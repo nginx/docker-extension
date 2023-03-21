@@ -19,9 +19,9 @@ LABEL org.opencontainers.image.title="NGINX Development Center" \
     com.docker.desktop.extension.icon="https://raw.githubusercontent.com/nginx/docker-extension/main/logo.svg"\
     com.docker.extension.detailed-description="With the NGINX Docker Development Center you are able to configure your running NGINX Docker Instances." \
     com.docker.extension.publisher-url="https://nginx.org/" \
-    com.docker.extension.additional-urls='[{"title":"Support", "url":"https://nginx.org/en/support.html"}]' \
+    com.docker.extension.additional-urls='[{"title":"Support", "url":"https://github.com/nginx/docker-extension/issues"}]' \
     com.docker.extension.categories="utility-tools" \
-    com.docker.extension.changelog="Initial Release"
+    com.docker.extension.changelog="Bugfix: Fixed several dark mode rendering issues"
 
 COPY metadata.json .
 COPY logo.svg .
