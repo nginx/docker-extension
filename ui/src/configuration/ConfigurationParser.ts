@@ -70,11 +70,13 @@ export class ConfigurationParser {
             }
 
             // Comment line
-            // find Includes to get the filename
             if (line.substring(0, 1) === '#') {
+                // find Includes to get the filename.
                 if (line.match('# configuration file')) {
                     //get configuration file name.
-                    configurationFile = line.match("[^\\/]*$") ? line.match("[^\\/]*$")![0] : ""
+                    console.log(line)
+                    // configurationFile = line.match("[^\\/]*$") ? line.match("[^\\/]*$")![0] : ""
+                    configurationFile = line.match("\\/.*$") ? line.match("\\/.*$")![0] : ""
                     configurationFile = configurationFile.replace(":", "")
                     return
                 }
@@ -140,6 +142,7 @@ export class ConfigurationParser {
                 return
             }
         })
+        console.log(configuration);
         return configuration
     }
 }

@@ -25,4 +25,4 @@ LABEL org.opencontainers.image.title="NGINX Development Center" \
 
 COPY metadata.json .
 COPY logo.svg .
-COPY --from=client-builder /ui/build ui
+COPY --from=client-builder /ui/build uide

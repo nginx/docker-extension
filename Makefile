@@ -1,4 +1,4 @@
-IMAGE?=nginx/nginx-docker-extension
+IMAGE?=nginx/docker-extension
 TAG?=latest
 
 BUILDER=buildx-multi-arch

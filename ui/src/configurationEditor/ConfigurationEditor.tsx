@@ -26,7 +26,7 @@ interface ConfigurationEditorProps {
 
 }
 
-//Reafactor! Dependency violation!
+//Refactor! Dependency violation!
 let instanceService: InstancesService = new InstancesService()
 
 export function ConfigurationEditor(props: ConfigurationEditorProps) {
@@ -48,7 +48,7 @@ export function ConfigurationEditor(props: ConfigurationEditorProps) {
             instanceService.getConfigurations(props.nginxInstance.id).then((data: any) => {
                 let filesArray: Array<string> = data
                 filesArray = filesArray.filter(item => item != "").map((item: string) => {
-                    let match = item.match('(?:\\/etc\\/nginx\\/.*)');
+                    let match = item.match('\\/.*$');
                     if (match != undefined) {
                         return match[0].replace(`:`, ``)
                     } else {

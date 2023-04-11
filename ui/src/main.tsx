@@ -6,8 +6,11 @@ import {DockerMuiThemeProvider} from "@docker/docker-mui-theme";
 import {App} from './App';
 import {ThemeProvider, useTheme} from "@mui/material";
 
-const CustomThemeProvider = ({ children }: any) => {
+
+const CustomThemeProvider = ({children}: any) => {
     const theme = useTheme();
+
+    // @ts-ignore
     theme.components = {
         ...theme.components,
         MuiChip: {
@@ -16,7 +19,7 @@ const CustomThemeProvider = ({ children }: any) => {
                     textTransform: "inherit"
                 },
             },
-        },
+        }
     };
     return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };

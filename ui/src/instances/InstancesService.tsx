@@ -115,12 +115,11 @@ export class InstancesService {
 
     // Maybe this can be the default function to send docker exec commands?
     async sendConfigurationToFile(file: string, containerId: string, configurationB64: string): Promise<any> {
-        const ret = await this.ddClient.docker.cli.exec(
+        return await this.ddClient.docker.cli.exec(
             "exec",
             [containerId,
                 "/bin/sh", "-c", `"echo ${configurationB64} |base64 -d > ${file}"`]);
-        return ret
-    }
+     }
 
     async reloadNGINX(containerId: string): Promise<any> {
         return await this.ddClient.docker.cli.exec(

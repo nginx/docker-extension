@@ -23,8 +23,8 @@ export function NewConfigurationFile(props: NewConfigurationFileProps) {
             props.instanceService.displayErrorMessage(`Filename can not be empty!`);
             return;
         }
-
-        props.instanceService.sendConfigurationToFile(`/etc/nginx/conf.d/${fileName}`, props.nginxInstance.id, content).then((data: any) => {
+// Make the path configurable
+        props.instanceService.sendConfigurationToFile(fileName, props.nginxInstance.id, content).then((data: any) => {
             props.instanceService.reloadNGINX(props.nginxInstance.id).then((data: any) => {
                 props.instanceService.displaySuccessMessage("Configuration successfully updated!");
             }).catch((reason: any) => {
@@ -37,13 +37,11 @@ export function NewConfigurationFile(props: NewConfigurationFileProps) {
         <Grid container direction={"column"} sx={{margin: 0, padding: 5}}>
             <Typography variant={"h2"} sx={{marginBottom: 2}}>Add a new configuration File</Typography>
             <Alert severity="info" sx={{marginBottom: 4}}>
-                Make sure the configuration filename ends with a .conf file extension!
+                Make sure the configuration filename ends with a .conf file extension and is a absolute path.
+                Example: /etc/nginx/conf.d/example.conf
             </Alert>
             <TextField
                 label="Configuration File Name"
-                InputProps={{
-                    startAdornment: <InputAdornment position="start" sx={{marginRight: "1.5rem"}}>/etc/nginx/conf.d/</InputAdornment>,
-                }}
                 onChange={(e: any) => {
                     setFileName(e.target.value)
                 }}
