@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {ConfigurationUiService} from "./ConfigurationUiService";
 import {
     Box,
-    Chip,
+    Chip, Grid,
     IconButton,
     Paper,
     Slide,
@@ -83,8 +83,8 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
     };
 
     const content = (
-        <Box
-            sx={{ width: "100%", height: "100vh" }}
+        <Grid
+            sx={{width: "100%", height: "100vh"}}
             style={{
                 position: "absolute",
                 top: "0",
@@ -95,22 +95,20 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                 backgroundColor: "transparent"
             }}
         >
-            <Box
+            <Grid
                 style={{
                     display: "flex",
                     width: "75%",
                     height: "100vh",
-                    borderLeft: "1px solid eee",
-                    boxShadow: "-3px 0px 5px rgb(0 0 0 / 20%)",
                     flexDirection: "column",
-                    backgroundColor: "primary.light",
                     alignItems: "flex-start"
                 }}
+                sx={{backgroundColor: "background.default",  borderLeft: "2px solid", borderColor: "primary.dark"}}
             >
                 <Close onClick={handleChangeServer} sx={{cursor: 'pointer'}} />
-                <Server/>
-            </Box>
-        </Box>
+                <Server nginxInstance={props.nginxInstance} />
+            </Grid>
+        </Grid>
     );
 
     const [locationSlide, setLocationSlide] = useState(false);
@@ -161,11 +159,11 @@ export function ConfigurationUi(props: ConfigurationUiProps) {
                     <TableHead>
                         <TableRow>
                             <TableCell color="text.secondary">Server
-                                {/*<Tooltip title="New Virtual Server">*/}
-                                {/*    <IconButton onClick={handleChangeServer} sx={{fontSize:"0.9rem"}}>*/}
-                                {/*        <Add/>*/}
-                                {/*    </IconButton>*/}
-                                {/*</Tooltip>*/}
+                                <Tooltip title="New Virtual Server">
+                                    <IconButton onClick={handleChangeServer} sx={{fontSize:"0.9rem"}}>
+                                        <Add/>
+                                    </IconButton>
+                                </Tooltip>
                             </TableCell>
                             <TableCell>Configuration File</TableCell>
                             <TableCell align="right">Ports</TableCell>

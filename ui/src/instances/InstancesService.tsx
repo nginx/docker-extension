@@ -62,13 +62,15 @@ export class InstancesService {
             //Other than that, the response from the docker exec command does not have any easy to parse
             //reference to the container anymore. So putting it in Context while creating the containers array
             //make sense.
+            console.log(container)
             return {
                 container: container.Id,
                 name: container.Names[0],
                 ports: container.Ports,
                 status: container.Status,
-                network: container.NetworkSettings.Networks,
-                mounts: container.Mounts || {},
+                //Networks is not an array per default. Converting!
+                networks: Object.entries(container.NetworkSettings.Networks),
+                mounts: container.Mounts || [],
                 promise: this.ddClient.docker.cli.exec(
                     "exec",
                     ["-i", `${container.Id}`,
@@ -128,6 +130,11 @@ export class InstancesService {
                 "/bin/sh", "-c", `"nginx -s reload"`]);
     }
 
+    // Building the Containers Ecosystem
+    // Finding the attached network(s)
+    // Build a list of all containers with its attached networks
+
+
     displaySuccessMessage(message: string): void {
         this.ddClient.desktopUI.toast.success(message)
     }
@@ -135,4 +142,5 @@ export class InstancesService {
     displayErrorMessage(message: string): void {
         this.ddClient.desktopUI.toast.error(message)
     }
+
 }

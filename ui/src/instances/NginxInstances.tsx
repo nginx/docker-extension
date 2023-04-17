@@ -29,7 +29,8 @@ import {TemplateStore} from "../templateStore/TemplateStore";
 interface NginxInstances {
     id: string,
     name: string,
-    mounts: Array<any>
+    mounts: Array<any>,
+    networks: Array<any>
 }
 
 export function NginxInstance() {
@@ -39,7 +40,6 @@ export function NginxInstance() {
     const [instances, setResponse] = useState<any>([]);
     const [containerId, setContainerId] = useState<any>(undefined);
     const [loading, setLoading] = useState<any>(true);
-    const [configuration, setConfiguration] = useState<any>(undefined);
 
     const [errorClasses, setErrorClasses] = useState<any>({
         bannerBackground: "nginx-banner-neutral",
@@ -49,7 +49,7 @@ export function NginxInstance() {
     });
 
     //new State Object - old stuff has to be refactored!
-    const [nginxInstance, setNginxInstance] = useState<NginxInstances>({id: "", name: "", mounts: []})
+    const [nginxInstance, setNginxInstance] = useState<NginxInstances>({id: "", name: "", mounts: [], networks: []})
     // Holds the "original" Configuration before modifying to be able to role-back in case of errors.
 
     const instanceService: InstancesService = new InstancesService()
@@ -66,6 +66,7 @@ export function NginxInstance() {
                             id: inst.container,
                             out: container.stderr,
                             ports: inst.ports,
+                            networks: inst.networks,
                             mounts: inst.mounts,
                             status: inst.status,
                             name: inst.name.replace("/", "")
@@ -74,6 +75,7 @@ export function NginxInstance() {
                 });
                 setResponse(instancesArray)
                 setLoading(false)
+                console.log(instancesArray)
             });
         }
 
@@ -83,7 +85,9 @@ export function NginxInstance() {
     const nginxInstanceOnClickHandler: MouseEventHandler<HTMLLIElement> | any = (containerId: string, name: string) => (event: MouseEventHandler<HTMLLIElement>) => {
         instanceService.getConfigurations(containerId).then((data: any) => {
             const mounts = instances.find(({id}: any) => id === containerId).mounts || []
-            setNginxInstance({id: containerId, name: name, mounts: mounts})
+            const networks = instances.find(({id}: any) => id === containerId).networks || []
+
+            setNginxInstance({id: containerId, name: name, mounts: mounts, networks: networks})
         })
     }
 
@@ -97,14 +101,14 @@ export function NginxInstance() {
         if (port.PrivatePort && port.PublicPort) {
             return (
                 <Tooltip title={`${port.IP}:${port.PublicPort}:${port.PrivatePort}`} key={key}>
-                    <Typography variant="body1" display="inline">{port.PublicPort}:{port.PrivatePort} </Typography>
+                    <Typography variant="body1" display="inline">{`${port.PublicPort}:${port.PrivatePort} (${port.Type})`}</Typography>
                 </Tooltip>
             )
         }
         if (port.PrivatePort && !port.PublicPort) {
             return (
                 <Tooltip title={port.PrivatePort} key={key}>
-                    <Typography variant="body1" display="inline">unbound:{port.PrivatePort} </Typography>
+                    <Typography variant="body1" display="inline">{`unbound:${port.PrivatePort} (${port.Type})`}</Typography>
                 </Tooltip>
             )
         }
@@ -124,17 +128,17 @@ export function NginxInstance() {
         <Box sx={{m: 1}}>
             {!loading ? (
                 !nginxInstance.id ? (
-                   instances == 0 ? (
+                    instances == 0 ? (
                         <Box>
-                        There are no active NGINX containers! Start a container to get started!
+                            There are no active NGINX containers! Start a container to get started!
                             {/* @ts-expect-error not typed yet! */}
-                            <Typography component={"pre"} variant="inline-code">docker run -d -P nginx:latest</Typography>
+                            <Typography component={"pre"} variant="inline-code">docker run -d -P
+                                nginx:latest</Typography>
                         </Box>) : (
                         <Box>
                             <Typography variant="subtitle2">Active containers running NGINX</Typography>
                             <Grid container> {
                                 instances.map((inst: any, key: number) => (
-                                    //Refactoring Component Instance
                                     <Grid item sm={6} lg={4} key={key}>
                                         <Box className={"ngx-instance"} borderRadius={1} boxShadow={10} margin={2}
                                              padding={2}
@@ -154,7 +158,16 @@ export function NginxInstance() {
                                                 <Typography variant="subtitle2" display="inline">NGINX
                                                     Version: </Typography>
                                                 <Typography variant="body1"
-                                                            display="inline">{inst.out.substring(15, inst.out.length)}</Typography>
+                                                            display="inline">
+                                                    {inst.out.substring(15, inst.out.length)}
+                                                </Typography>
+                                            </Box>
+                                            <Box>
+                                                <Typography variant="subtitle2" display="inline">Network: </Typography>
+                                                {inst.networks.map((network: any, key: number) => (
+                                                    <Typography variant="body1"
+                                                    display="inline">{network[0]} - {network[1]['IPAddress']}</Typography>
+                                                ))}
                                             </Box>
                                             <Box>
                                                 <Typography variant="subtitle2" display="inline">Open Ports
@@ -182,7 +195,7 @@ export function NginxInstance() {
                                 <Tooltip title="Back to Instances Overview">
                                     <IconButton className={"ngx-back-button"} onClick={() => {
                                         setContainerId(undefined)
-                                        setNginxInstance({id: "", name: "", mounts: []})
+                                        setNginxInstance({id: "", name: "", mounts: [], networks: []})
                                     }} disabled={errorClasses.backToDashboardDisabled}>
                                         <ArrowBackIosNewOutlined/>
                                     </IconButton>
