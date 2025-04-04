@@ -1,68 +1,52 @@
 # Contributing Guidelines
 
-The following is a set of guidelines for contributing to NGINX Unit.  We do
-appreciate that you are considering contributing!
+The following is a set of guidelines for contributing to this project. We really appreciate that you are considering contributing!
 
-## Table Of Contents
+#### Table of Contents
 
-- [Ask a Question](#ask-a-question)
+- [Getting Started](#getting-started)
 - [Contributing](#contributing)
-- [Git Style Guide](#git-style-guide)
+- [Code Guidelines](#code-guidelines)
+- [Code of Conduct](/CODE_OF_CONDUCT.md)
 
-## Ask a Question
+## Getting Started
 
-Please open an [issue](https://github.com/nginx/docker-extension/new) on GitHub with
-the label `question`.  You can also ask a question on
-[Slack](https://nginxcommunity.slack.com).
-
+Follow the instructions on the README's [Getting Started](/README.md#Getting-Started) section to get this project up and running.
 
 ## Contributing
 
 ### Report a Bug
 
-Ensure the bug was not already reported by searching on GitHub under
-[Issues](https://github.com/nginx/docker-extension/issues).
+To report a bug, open an issue on GitHub with the label `bug` using the available [bug report issue form](/.github/ISSUE_TEMPLATE/bug_report.yml). Please ensure the bug has not already been reported. **If the bug is a potential security vulnerability, please report it using our [security policy](/SECURITY.md).**
 
-If the bug is a potential security vulnerability, please report using our
-[security policy](https://unit.nginx.org/troubleshooting/#getting-support).
+### Suggest a Feature or Enhancement
 
-To report a non-security bug, open an
-[issue](https://github.com/nginx/unit/issues/new) on GitHub with the label
-`bug`.  Be sure to include a title and clear description, as much relevant
-information as possible, and a code sample or an executable test case showing
-the expected behavior that doesn't occur.
+To suggest a feature or enhancement, please create an issue on GitHub with the label `enhancement` using the available [feature request issue form](/.github/ISSUE_TEMPLATE/feature_request.yml). Please ensure the feature or enhancement has not already been suggested.
 
+### Open a Pull Request (PR)
 
-### Suggest an Enhancement
+- Fork the repo, create a branch, implement your changes, add any relevant tests, and submit a PR when your changes are **tested** and ready for review.
+- Fill in the [PR template](/.github/pull_request_template.md).
 
-To suggest an enhancement, open an
-[issue](https://github.com/nginx/docker-extension/issues/new) on GitHub with the label
-`enhancement`.  Please do this before implementing a new feature to discuss the
-feature first.
+**Note:** If you'd like to implement a new feature, please consider creating a [feature request issue](/.github/ISSUE_TEMPLATE/feature_request.yml) first to start a discussion about the feature.
 
+#### F5 Contributor License Agreement (CLA)
 
-### Open a Pull Request
+F5 requires all contributors to agree to the terms of the F5 CLA (available [here](https://github.com/f5/f5-cla/.github/blob/main/docs/f5_cla.md)) before any of their changes can be incorporated into an F5 Open Source repository (even contributions to the F5 CLA itself!).
 
-Fork the repo, create a branch, and  submit a PR when your changes are tested and ready for review.
-Again, if you'd like to implement a new feature, please consider creating a feature request
-issue first to start a discussion about the feature.
+If you have not yet agreed to the F5 CLA terms and submit a PR to this repository, a bot will prompt you to view and agree to the F5 CLA. You will have to agree to the F5 CLA terms through a comment in the PR before any of your changes can be merged. Your agreement signature will be safely stored by F5 and no longer be required in future PRs.
 
+## Code Guidelines
 
-## Git Style Guide
+<!-- ### Go/Python/Bash/etc... Guidelines (OPTIONAL) -->
 
-- Keep a clean, concise and meaningful `git commit` history on your branch,
-  rebasing locally and squashing before submitting a PR
+### Git Guidelines
 
-- In the subject line, use the past tense ("Added feature", not "Add feature");
-  also, use past tense to describe past scenarios, and present tense for
-  current behavior
-
-- Limit the subject line to 67 characters, and the rest of the commit message
-  to 80 characters
-
-- Reference issues and PRs liberally after the subject line; if the commit
-  remedies a GitHub issue, [name
-  it](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)
-  accordingly
-
-- Don't rely on command-line commit messages with `-m`; use the editor instead
+- Keep a clean, concise and meaningful git commit history on your branch (within reason), rebasing locally and squashing before submitting a PR.
+- If possible and/or relevant, use the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format when writing a commit message, so that changelogs can be automatically generated.
+- Follow the guidelines of writing a good commit message as described here <https://chris.beams.io/posts/git-commit/> and summarized in the next few points:
+  - In the subject line, use the present tense ("Add feature" not "Added feature").
+  - In the subject line, use the imperative mood ("Move cursor to..." not "Moves cursor to...").
+  - Limit the subject line to 72 characters or less.
+  - Reference issues and pull requests liberally after the subject line.
+  - Add more detailed description in the body of the git message (`git commit -a` to give you more space and time in your text editor to write a good message instead of `git commit -am`).
